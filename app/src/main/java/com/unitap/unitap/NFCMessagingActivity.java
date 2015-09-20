@@ -11,14 +11,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class NFCMessagingActivity extends AppCompatActivity {
+
     private EditText outgoingMessage;   //this is where the message from the other user will be stored before it's sent
     private TextView incomingMessage;
+    private AlertDialog dialogMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfcmessaging);
         outgoingMessage = (EditText) findViewById(R.id.outgoing);
         incomingMessage = (TextView) findViewById(R.id.incoming);
+        dialogMessage = new AlertDialog.Builder(this).setNeutralButton("Ok", null).create();
     }
 
     @Override
@@ -51,7 +55,7 @@ public class NFCMessagingActivity extends AppCompatActivity {
             incomingMessage.setText("Your last sent Message: \n\n" + outgoingMessage.getText().toString());
             //perform the sending function
         }else{
-            alertmessage("You can't send an empty message!");
+            dialogMessage("It's Empty", "You can't send an empty message!");
         }
     }
 
@@ -59,17 +63,9 @@ public class NFCMessagingActivity extends AppCompatActivity {
      * This will just make it easier to send an alert to the user when need be
      * @param message some message to display
      */
-    public void alertmessage(String message){
-        AlertDialog alertDialog = new AlertDialog.Builder(NFCMessagingActivity.this).create();
-        alertDialog.setTitle("It's Empty");
-        alertDialog.setMessage(message);
-        alertDialog.show();
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "alright",
-
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+    public void dialogMessage(String title, String message){
+        dialogMessage.setTitle(title);
+        dialogMessage.setMessage(message);
+        dialogMessage.show();
     }
 }

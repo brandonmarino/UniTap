@@ -1,6 +1,4 @@
-package com.unitap.unitap.Tags;
-
-import com.unitap.unitap.Tags.VirtualTag;
+package com.unitap.unitap.Wallet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +6,7 @@ import java.util.List;
 /** This will be the wallet which will contain all of the users tags
  * Created by Brandon Marino on 9/22/2015.
  */
-public class TagWallet{
+public class VirtualWallet implements java.io.Serializable{
     //this is the specific list that contains all of their tags
     //private Hashtable<Integer, VirtualTag> tags = new Hashtable<>();
     //maybe later, we could support multiple wallets, and those wallets could each be assigned to a username
@@ -71,7 +69,7 @@ public class TagWallet{
     }
 
     /********************************************
-     *              Sort this Wallet
+     *              Sort this VirtualWallet
      ********************************************/
 
     public void sortAlphabetical(){

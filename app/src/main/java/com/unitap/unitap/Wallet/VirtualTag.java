@@ -1,15 +1,14 @@
-package com.unitap.unitap.Tags;
+package com.unitap.unitap.Wallet;
 
 import android.media.Image;
 import com.unitap.unitap.Exceptions.*;
-import com.unitap.unitap.NFCBackend.*;
 
 import java.util.Date;
 
 /** This is the physical representation of the Tag itself.  These will need to be stored in some XML document on closure of the application.
  * Created by Brandon Marino on 9/22/2015.
  */
-public class VirtualTag {
+public class VirtualTag implements java.io.Serializable{
     //fields
     private String name;
     private Image picture;

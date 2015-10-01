@@ -1,4 +1,4 @@
-package com.unitap.unitap;
+package com.unitap.unitap.Activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -10,7 +10,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class NFCMessagingActivity extends AppCompatActivity {
+import com.unitap.unitap.Exceptions.NFCException;
+import com.unitap.unitap.Exceptions.VirtualTagFormatException;
+import com.unitap.unitap.NFCBackend.Messaging.SendMessage;
+import com.unitap.unitap.NFCBackend.NFCPreparation;
+import com.unitap.unitap.R;
+import com.unitap.unitap.Tags.VirtualTag;
+
+public class UniTapActivity extends AppCompatActivity {
 
     private EditText outgoingMessage;   //this is where the message from the other user will be stored before it's sent
     private TextView incomingMessage;
@@ -23,6 +30,14 @@ public class NFCMessagingActivity extends AppCompatActivity {
         outgoingMessage = (EditText) findViewById(R.id.outgoing);
         incomingMessage = (TextView) findViewById(R.id.incoming);
         dialogMessage = new AlertDialog.Builder(this).setNeutralButton("Ok", null).create();
+        try{
+            new NFCPreparation(this);
+        }catch (NFCException nfcException){
+            String nfcMessage = nfcException.getMessage();
+            if (nfcMessage != null && !nfcMessage.equals(""))
+                dialogMessage("NFC Issues!",nfcMessage);
+        }
+        dialogMessage("Everything is good","No NFC/NDEF issues found during preparation");
     }
 
     @Override
@@ -52,6 +67,7 @@ public class NFCMessagingActivity extends AppCompatActivity {
         //user has chosen to send a message to another device
         String out = outgoingMessage.getText().toString();
         if (out != null && !out.equals("")){
+            new SendMessage("Hello");
             incomingMessage.setText("Your last sent Message: \n\n" + outgoingMessage.getText().toString());
             //perform the sending function
         }else{

@@ -1,13 +1,9 @@
 package com.unitap.unitap.NFCBackend;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
-import android.nfc.NfcEvent;
 
-import com.unitap.unitap.Exceptions.NFCException;
+import com.unitap.unitap.Exceptions.InheritedExceptions.NFCException;
 
 /**
  * Created by Brandon Marino on 10/1/2015.

@@ -2,32 +2,11 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\Brandon Marino\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.0.0\support-annotations-23.0.0.jar"
+        jar="D:\Cloud Storage\Google Drive\Repositories\University\Year 4\Project\UniTap\UniTap\commons-codec-1.10\commons-codec-1.10.jar"
         jumboMode="false"
         revision="23.0.0"
-        sha1="990e7f98a7bad86a40b1f0bcfeb039023afd0839">
-        <dex dex="D:\Cloud Storage\Google Drive\Repositories\University\Year 4\Project\UniTap\UniTap\app\build\intermediates\pre-dexed\release\support-annotations-23.0.0-b31cf7e748ad3dbd947fa637c481453dca6d18ae.jar" />
-    </item>
-    <item
-        jar="D:\Cloud Storage\Google Drive\Repositories\University\Year 4\Project\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.0\jars\libs\internal_impl-23.0.0.jar"
-        jumboMode="false"
-        revision="23.0.0"
-        sha1="8bd336eeae661e8311330284897ee07f8ebaa297">
-        <dex dex="D:\Cloud Storage\Google Drive\Repositories\University\Year 4\Project\UniTap\UniTap\app\build\intermediates\pre-dexed\release\internal_impl-23.0.0-6b77a3db9d388c14a12e711795f25e0af7d3688c.jar" />
-    </item>
-    <item
-        jar="D:\Cloud Storage\Google Drive\Repositories\University\Year 4\Project\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.0\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.0"
-        sha1="8413c27b45b7fe61dca4a98159f65e2cee215f5a">
-        <dex dex="D:\Cloud Storage\Google Drive\Repositories\University\Year 4\Project\UniTap\UniTap\app\build\intermediates\pre-dexed\release\classes-b5df66a4a9fa4f5fdf99b356524e5885812be935.jar" />
-    </item>
-    <item
-        jar="D:\Cloud Storage\Google Drive\Repositories\University\Year 4\Project\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.0\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.0"
-        sha1="4fcf0b1879f8caf497c073e1432d398e9e2988c1">
-        <dex dex="D:\Cloud Storage\Google Drive\Repositories\University\Year 4\Project\UniTap\UniTap\app\build\intermediates\pre-dexed\release\classes-ab89b2d79a8af066e353205178eb4fbe5e68ce8e.jar" />
+        sha1="fdeb1413a218f85fadde79207edac8a724b2a192">
+        <dex dex="D:\Cloud Storage\Google Drive\Repositories\University\Year 4\Project\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\commons-codec-1.10-132253f4dc8e153c549714f1cf04722b65a021a7.jar" />
     </item>
 
 </items>

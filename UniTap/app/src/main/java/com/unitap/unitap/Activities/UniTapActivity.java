@@ -1,4 +1,4 @@
-package com.unitap.unitap.Activities;
+package com.unitap.unitap.activities;
 
 import android.app.AlertDialog;
 import android.content.Context;

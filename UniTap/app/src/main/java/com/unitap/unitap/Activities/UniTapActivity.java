@@ -3,7 +3,6 @@ package com.unitap.unitap.activities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.MenuItem;
@@ -19,6 +18,7 @@ import com.unitap.unitap.NFCBackend.Messaging.NFCSendMessage;
 import com.unitap.unitap.NFCBackend.NFCPreparation;
 import com.unitap.unitap.R;
 import com.unitap.unitap.Wallet.Wallet;
+import com.unitap.unitap.activities.Abstracted.NavigationPane;
 
 import java.io.File;
 import java.util.UUID;
@@ -32,7 +32,7 @@ import java.util.UUID;
  *
  * This is to allow the app to use 256 bit encryption (because the generated UUID is 32 bits)
  */
-public class UniTapActivity extends AppCompatActivity {
+public class UniTapActivity extends NavigationPane {
 
     private AlertDialog dialogMessage;
     private Wallet wallet;  //users wallet to store tags
@@ -49,8 +49,9 @@ public class UniTapActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setNewContentView(R.layout.activity_navigation_pane);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nfcmessaging);
+
         dialogMessage = new AlertDialog.Builder(this).setNeutralButton("Ok", null).create();
         //Outgoing and incoming simply refer to the two things on the main screen of the app (your meessage goes here... thingy)
 

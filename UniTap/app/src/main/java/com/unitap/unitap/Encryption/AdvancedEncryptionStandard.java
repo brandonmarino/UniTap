@@ -25,8 +25,10 @@ public class AdvancedEncryptionStandard
      */
     public String encrypt(String plainText)
     {
-        byte[] bArrayReturn = encrypt(plainText.getBytes());
-        return new String(bArrayReturn);
+        byte[] plainBytes = encrypt(plainText.getBytes());
+        if (plainBytes == null)
+            return null;
+        return new String(plainBytes);
     }
 
     /**
@@ -50,6 +52,8 @@ public class AdvancedEncryptionStandard
     public String decrypt(String encrypted)
     {
         byte[] plainBytes = decrypt(encrypted.getBytes());
+        if (plainBytes == null)
+            return null;
         return new String(plainBytes);
     }
 

@@ -1,23 +1,29 @@
-# Tagger
+# UniTap
 A simple NFC app.  
-TEST
-Author 
-Brandon Marino
+Authors 
+Brandon Marino, Daniel Abdalla, Osama Buhammad, Mustafa Alshakhs
 
 Current Version
-0.00
+1.00
 
-The end plan is for the app to mirror NFC tags.  
-The main reason for starting this is that I'm curious and bored.
+The Purpose of this project is to build a virrtual wallet which contains many virtual NFC tags.  These tags will work in tandem with a terminal allowing the user access to buildings and the ability to make payments and spend loyalty points.
+
+Done
+1. Simple NDEF messaging between two devices
+2. Simple Wallet to XML exportation
+3. Implement encryption on a string
+4. Navigation Pane and added simple Material Design style navigator and coloured statusbar/actionbar 
 
 To Do
 
-1. Research android's RFID api and the three NFC modes
-2. Mess around with dumping my presto and gym card information on my phone and displaying their payloads
-3. Try to have my phone hold onto the card's payload and then broadcast it (Test by running the proof of concept -app 1- on another phone)
-4. Work on permanently storing the card's payload to be used later
-5. Multiple cards -implement a list-
-6. Visually polish
-7. maybe implement ads?
-8. Make a new google account in order to publish the app (but not have my main account banned for no good reason)
-8. Publish to the android app store
+1. Simple messaging to the arduino
+2. Keep payload encrypted until it is sent to the terminal.  The key to decrypt is stored on the server and a secret to the server alone.
+3. Have the app 'subscribe' to a new card using a username and id
+4. HOST CARD EMULATION
+5. Oral Presentation
+6. Make sure android ignores the tag when one phone is pressed against another
+7. Cards list view
+8. Database Server implementation
+9. Make it look pretty
+10. Demo it
+11. Make the report

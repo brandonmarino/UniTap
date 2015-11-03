@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.unitap.unitap.Activities.WalletActivity;
+import com.unitap.unitap.Activities.testingHCEActivity;
 import com.unitap.unitap.Activities.testingNDEFActivity;
 import com.unitap.unitap.Exceptions.InheritedExceptions.NFCException;
 import com.unitap.unitap.NFCBackend.NFCPreparation;
@@ -105,7 +106,7 @@ public abstract class NavigationPane extends AppCompatActivity
             newIntent = new Intent(this, testingNDEFActivity.class);
             startActivity(newIntent);
         } else if (id == R.id.nav_testHCE){
-            newIntent = new Intent(this, testingNDEFActivity.class);
+            newIntent = new Intent(this, testingHCEActivity.class);
             startActivity(newIntent);
         } else if (id == R.id.nav_loginout) {
             //logout of the current wallet
@@ -149,5 +150,30 @@ public abstract class NavigationPane extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+
+    /***********************************************************************************************
+     *                      Non-Critical Functions
+     ***********************************************************************************************/
+
+    /**
+     * Seems pretty useless. We could remove it, but it isn't hurting anything so I left it
+     * @param item dont know what this is
+     * @return something..
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -1,5 +1,8 @@
-package com.unitap.unitap.activities.Abstracted;
+package com.unitap.unitap.Activities.Abstracted;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,33 +15,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.unitap.unitap.Activities.WalletActivity;
+import com.unitap.unitap.Activities.testingNDEFActivity;
+import com.unitap.unitap.Exceptions.InheritedExceptions.NFCException;
+import com.unitap.unitap.NFCBackend.NFCPreparation;
 import com.unitap.unitap.R;
 
 public abstract class NavigationPane extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private int contentView;
-
-    protected void setNewContentView(int contentView){
-        this.contentView = contentView;
-    }
-
+    private Toolbar toolbar;
+    private AlertDialog dialogMessage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(contentView);
+        //initializing a dialog message
+        dialogMessage = new AlertDialog.Builder(this).setNeutralButton("Ok", null).create();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "This will add new card", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -50,6 +47,36 @@ public abstract class NavigationPane extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**
+     *
+     * @param contentView
+     */
+    protected void setNewContentView(int contentView){
+        this.contentView = contentView;
+    }
+
+    /**
+     *
+     * @param title
+     */
+    protected void setToolbarTitle(String title){
+        toolbar.setTitle(title);
+    }
+
+
+    /**
+     * This will just make it easier to send an alert to the user when need be
+     * @param message some message to display
+     */
+    protected void dialogMessage(String title, String message){
+        dialogMessage.setTitle(title);
+        dialogMessage.setMessage(message);
+        dialogMessage.show();
+    }
+
+    /**
+     *
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -60,14 +87,26 @@ public abstract class NavigationPane extends AppCompatActivity
         }
     }
 
-
+    /**
+     *
+     * @param item
+     * @return
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Intent newIntent;
         if (id == R.id.nav_wallet) {
-            //Navigate to wallets list
+            newIntent = new Intent(this, WalletActivity.class);
+            startActivity(newIntent);
+        } else if (id == R.id.nav_testNDEF) {
+            newIntent = new Intent(this, testingNDEFActivity.class);
+            startActivity(newIntent);
+        } else if (id == R.id.nav_testHCE){
+            newIntent = new Intent(this, testingNDEFActivity.class);
+            startActivity(newIntent);
         } else if (id == R.id.nav_loginout) {
             //logout of the current wallet
             if (item.getTitle().equals("Log In")) {
@@ -86,5 +125,29 @@ public abstract class NavigationPane extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //ensure NFC is operational on this device
+        try{
+            NFCPreparation.prepare(this);
+        }catch (NFCException nfcException){
+            String nfcMessage = nfcException.getMessage();
+            if (nfcMessage != null && !nfcMessage.equals(""))
+                dialogMessage("NFC Issues!",nfcMessage);
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
     }
 }

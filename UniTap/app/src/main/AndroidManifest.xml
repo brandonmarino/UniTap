@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.unitap.unitap" >
+    package="com.unitap.unitap"
+    android:versionCode="1"
+    android:versionName="1.0">
 
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-feature
+        android:name="android.hardware.nfc.hce"
+        android:required="true"
+        />
 
     <application
         android:allowBackup="true"
@@ -12,20 +18,29 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme.NoActionBar" >
         <activity
-            android:name=".activities.UniTapActivity"
-            android:label="@string/app_name" >
+            android:name=".Activities.testingNDEFActivity"
+            android:label="Testing NDEF"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name=".Activities.WalletActivity"
+            android:label="@string/title_activity_wallet"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
-            android:name=".activities.Abstracted.NavigationPane"
-            android:label="@string/title_activity_navigation_pane"
-            android:theme="@style/AppTheme.NoActionBar" >
-
-            <!-- android:theme="@style/AppTheme.NoActionBar" -->
+            android:name=".Activities.CardAdder"
+            android:label="@string/title_activity_card_adder"
+            android:parentActivityName=".Activities.WalletActivity"
+            android:launchMode="singleTask">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.unitap.unitap.Activities.WalletActivity" />
         </activity>
     </application>
 

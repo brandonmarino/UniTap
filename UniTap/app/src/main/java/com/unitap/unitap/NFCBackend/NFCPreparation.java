@@ -23,4 +23,12 @@ public class NFCPreparation{
          */
         return nfcAdapter;
     }
+    public boolean checkDeviceHCE(){
+
+        //PackageManager pm = context.getPackageManager();
+        //if(.hasSystemFeature("")){
+
+        //}
+        return false;
+    }
 }

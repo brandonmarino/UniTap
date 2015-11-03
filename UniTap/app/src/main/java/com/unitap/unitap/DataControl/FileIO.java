@@ -1,7 +1,5 @@
 package com.unitap.unitap.DataControl;
 
-import com.unitap.unitap.Wallet.Wallet;
-
 import java.io.*;
 
 /**This abstract class will handle all direct FileIO

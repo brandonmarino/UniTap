@@ -1,0 +1,104 @@
+package com.unitap.unitap.Activities;
+
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.unitap.unitap.Exceptions.InheritedExceptions.NFCException;
+import com.unitap.unitap.NFCBackend.Messaging.NFCSendMessage;
+import com.unitap.unitap.NFCBackend.NFCPreparation;
+import com.unitap.unitap.R;
+import com.unitap.unitap.Activities.Abstracted.NavigationPane;
+
+/**
+ * In order to run this app, on your computer, you'll need to download the files here:
+ * http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
+ * and store them here:
+ * {jdk}/jre/lib/security
+ *
+ * This is to allow the app to use 256 bit encryption (because the generated UUID is 32 bits)
+ */
+public class testingNDEFActivity extends NavigationPane {
+
+    /***********************************************************************************************
+     *                      App State Functions (Create, Pause, Resume)
+     ***********************************************************************************************/
+
+    /**
+     * This is what happens when it app is created. all functionality happens once for the lifetime of the app (Or I think that's how it works)
+     * @param savedInstanceState this is what makes me think the above statement is not correct
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        setNewContentView(R.layout.activity_testing_ndef);
+        super.onCreate(savedInstanceState);
+        setToolbarTitle("NDEF Testing");
+    }
+
+
+    /**
+     * What the app does once the phone enters the app (Does this the first time the app is launched, and then every time after that)
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        //ensure NFC is operational on this device
+        try{
+            NFCPreparation.prepare(this);
+        }catch (NFCException nfcException){
+            String nfcMessage = nfcException.getMessage();
+            if (nfcMessage != null && !nfcMessage.equals(""))
+                dialogMessage("NFC Issues!",nfcMessage);
+        }
+    }
+
+    /***********************************************************************************************
+     *                      Button-Action Handlers
+     ***********************************************************************************************/
+
+    /**
+     * Main button in testingNDEFActivity.  This will handle messaging on the proof of concept
+     * @param v
+     */
+    public void clickableButton(View v) {
+        //user has chosen to send a message to another device
+        EditText outgoingMessage = (EditText) findViewById(R.id.outgoing);
+        TextView incomingMessage = (TextView) findViewById(R.id.incoming);
+
+        String out = outgoingMessage.getText().toString();
+        if (!out.equals("")){
+            String toTextBox = "Your last sent Message: \n\n" + outgoingMessage.getText().toString();
+            incomingMessage.setText(toTextBox);
+            //perform the sending function
+            NFCSendMessage.send(this, outgoingMessage.getText().toString());
+        }else
+            dialogMessage("It's Empty", "You can't send an empty message!");
+    }
+
+    /***********************************************************************************************
+     *                      Non-Critical Functions
+     ***********************************************************************************************/
+
+    /**
+     * Seems pretty useless. We could remove it, but it isn't hurting anything so I left it
+     * @param item dont know what this is
+     * @return something..
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+}

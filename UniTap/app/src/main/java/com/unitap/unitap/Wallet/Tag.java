@@ -1,27 +1,33 @@
 package com.unitap.unitap.Wallet;
 
 
+import android.content.Context;
 import android.media.Image;
 
 import com.unitap.unitap.Exceptions.InheritedExceptions.VirtualTagFormatException;
-import com.unitap.unitap.Wallet.Payload;
+import com.unitap.unitap.R;
 
 import org.simpleframework.xml.Default;
+
+import java.util.Comparator;
 import java.util.Date;
+
+import it.gmariotti.cardslib.library.internal.Card;
 
 /**
  * This is the physical representation of the Tag itself.  These will need to be stored in some XML document on closure of the application.
  * Created by Brandon Marino on 9/22/2015.
  */
 @Default
-public class Tag {
+public class Tag extends Card{
     private String name;
     //private Image picture;
     private Date addedDate;
-    private Payload payload;
-
-    public Tag() {
-        this("Generic", new Payload());
+    private String payload;
+    public Tag(Context context) {
+        super(context, R.layout.content_wallet);
+        this.name = "Generic";
+        this.payload = "THIS IS A MESSAGE TO BE SEND BY NFC";
     }
 
     /**
@@ -32,12 +38,13 @@ public class Tag {
      *                param id the id of the vendor/card type
      * @param payload the specific payload which needs to be dumped to the NDEF device
      */
-    public Tag(String name, /*Image picture, */ Payload payload) {
+    public Tag(Context context, String name, /*Image picture, */ String payload) {
+        super(context, R.layout.content_wallet);
         /**
          * Check the format of the tag.  Names and images can be fixed, however vendor id and payloads cannot.
          */
         //if (payload == null || payload.isValid())
-        //    throw new VirtualTagFormatException("Wallet.Payload is either empty or corrupt");
+        //    throw new VirtualTagFormatException("payload is either empty or corrupt");
         this.name = name;
         //this.picture = new Image();
         this.addedDate = new Date();
@@ -58,10 +65,9 @@ public class Tag {
 
     /**
      * Get the payload which contains the byte map of the tag which this is representing
-     * Internal structure is to be defined in the Wallet.Payload class
      * @return the payload being represented here
      */
-    public Payload getPayload() {
+    public String getPayload() {
         return payload;
     }
     /**
@@ -71,7 +77,9 @@ public class Tag {
     public Image getPicture() {
     return picture;
     }*/
-
+    public Date getAddedDate(){
+        return addedDate;
+    }
     /******************************************************
      *                         Setters
      *****************************************************/
@@ -96,5 +104,32 @@ public class Tag {
      */
     public void setAddedDate(Date addedDate) {
         this.addedDate = addedDate;
+    }
+
+    /************************************************************
+     *              Comparators for Sorting
+     ************************************************************/
+    static class TagSortByInstitutionName implements Comparator<Tag> {
+        public int compare(Tag tag1, Tag tag2){
+            String institutionName1 = tag1.getName();
+            String institutionName2 = tag2.getName();
+            return institutionName1.compareTo(institutionName2);
+        }
+    }
+/*
+    static class TagSortByInstitutionId implements Comparator<Tag>{
+        public int compare(Tag tag1, Tag tag2){
+            Integer id1 = tag1.getInstitutionId();
+            Integer id2 = tag2.getInstitutionId();
+            return id1.compareTo(id2);
+        }
+    }
+*/
+    static class TagSortByDate implements Comparator<Tag>{
+        public int compare(Tag tag1, Tag tag2){
+            Date date1 = tag1.getAddedDate();
+            Date date2 = tag2.getAddedDate();
+            return date1.compareTo(date2);
+        }
     }
 }

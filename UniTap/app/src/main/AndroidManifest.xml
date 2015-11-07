@@ -29,16 +29,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".Activities.CardAdder"
-            android:label="@string/title_activity_card_adder"
-            android:parentActivityName=".Activities.WalletActivity"
-            android:launchMode="singleTask">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.unitap.unitap.Activities.WalletActivity" />
-        </activity>
-
         <!--NFC Testers-->
         <activity
             android:name=".Activities.testingNDEFActivity"

@@ -1,5 +1,6 @@
 package com.unitap.unitap.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.telephony.TelephonyManager;
 import android.view.View;
+import android.widget.EditText;
 
 import com.unitap.unitap.Activities.Abstracted.NavigationPane;
 import com.unitap.unitap.DataControl.ExtensibleMarkupLanguage;
@@ -23,6 +25,7 @@ import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
+import me.drakeet.materialdialog.MaterialDialog;
 
 public class WalletActivity extends NavigationPane {
 
@@ -30,6 +33,11 @@ public class WalletActivity extends NavigationPane {
     private Wallet wallet;
     private File walletCache;   //file store encrypted xml equivalent of the user's wallet
     private AdvancedEncryptionStandard crypt;
+    private Activity wActivity;
+    CardArrayAdapter mCardArrayAdapter;
+    MaterialDialog mMaterialDialog;
+    String nameOfNewCard;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,7 @@ public class WalletActivity extends NavigationPane {
 
         //location of the walletCache File
         walletCache = new File(this.getFilesDir(),"walletCache.ut");//creates a file which only this app can access
+        wActivity = this;
 
         //find device id for copy protection/encryption purposes
         //gather defining device IDs
@@ -59,8 +68,29 @@ public class WalletActivity extends NavigationPane {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(WalletActivity.this, CardAdder.class);
-                startActivityForResult(i, REQUEST_CODE);
+                final EditText cardName = new EditText(wActivity);
+                mMaterialDialog = new MaterialDialog(wActivity)
+                        .setTitle("Add Card")
+                        .setContentView(cardName)
+                        .setPositiveButton("Add", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                nameOfNewCard = cardName.getText().toString();
+                                Tag tag = new Tag(wActivity, nameOfNewCard, "payload");
+                                wallet.addTag(tag);
+                                addCard(tag);
+                                mMaterialDialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("CANCEL", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                nameOfNewCard = "";
+                                mMaterialDialog.dismiss();
+                            }
+                        });
+
+                mMaterialDialog.show();
             }
         });
 
@@ -72,7 +102,7 @@ public class WalletActivity extends NavigationPane {
         addCard(tag);
 
         //assign wallet to cardAdapter
-        CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, wallet);
+        mCardArrayAdapter = new CardArrayAdapter(this, wallet);
 
         //
         CardListView listView = (CardListView) findViewById(R.id.myList);
@@ -80,18 +110,6 @@ public class WalletActivity extends NavigationPane {
             listView.setAdapter(mCardArrayAdapter);
         }
 
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE && resultCode == 2){
-            String cardText = data.getStringExtra("cardText");
-            Tag tag = new Tag(this, cardText, "");
-            wallet.addTag(tag);
-            addCard(tag);
-
-        }
     }
 
     /**

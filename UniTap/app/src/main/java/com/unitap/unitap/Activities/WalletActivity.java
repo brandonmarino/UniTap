@@ -1,9 +1,12 @@
 package com.unitap.unitap.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.design.widget.FloatingActionButton;
 import android.telephony.TelephonyManager;
+import android.view.View;
 
 import com.unitap.unitap.Activities.Abstracted.NavigationPane;
 import com.unitap.unitap.DataControl.ExtensibleMarkupLanguage;
@@ -52,35 +55,21 @@ public class WalletActivity extends NavigationPane {
         //store key in encryption object
         crypt= new AdvancedEncryptionStandard(key);
 
-        //floating button
-         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "This will add new card", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent i = new Intent(WalletActivity.this, CardAdder.class);
+                startActivityForResult(i, REQUEST_CODE);
             }
         });
-        */
-
-        //logo on card
-        int image = R.drawable.tagstand_logo_icon;
 
         //Make test Wallet
         wallet = new Wallet("Dan");
+
         Tag tag = new Tag(this, "dan", "this is the payload to be send by nfc and stuff");
         wallet.addTag(tag);
-
-        //Make card header
-        CardHeader header = new CardHeader(this);
-        header.setTitle(tag.getName());
-        tag.addCardHeader(header);
-
-        //Stuff with card thumbnail
-        CardThumbnail thumbNail = new CardThumbnail(this);
-        thumbNail.setDrawableResource(image);
-        tag.addCardThumbnail(thumbNail);
+        addCard(tag);
 
         //assign wallet to cardAdapter
         CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, wallet);
@@ -89,6 +78,19 @@ public class WalletActivity extends NavigationPane {
         CardListView listView = (CardListView) findViewById(R.id.myList);
         if (listView!=null){
             listView.setAdapter(mCardArrayAdapter);
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE && resultCode == 2){
+            String cardText = data.getStringExtra("cardText");
+            Tag tag = new Tag(this, cardText, "");
+            wallet.addTag(tag);
+            addCard(tag);
+
         }
     }
 
@@ -127,5 +129,20 @@ public class WalletActivity extends NavigationPane {
         //check if stored wallet is legit/uncorrupted
         if (wallet == null)
             wallet = new Wallet();
+    }
+
+    public void addCard(Tag tag){
+        //logo on card
+        int image = R.drawable.tagstand_logo_icon;
+
+        //Make card header
+        CardHeader header = new CardHeader(this);
+        header.setTitle(tag.getName());
+        tag.addCardHeader(header);
+
+        //Stuff with card thumbnail
+        CardThumbnail thumbNail = new CardThumbnail(this);
+        thumbNail.setDrawableResource(image);
+        tag.addCardThumbnail(thumbNail);
     }
 }

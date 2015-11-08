@@ -20,7 +20,7 @@
 
         <activity
             android:name=".Activities.WalletActivity"
-            android:label="@string/title_activity_wallet"
+            android:label="@string/app_name"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

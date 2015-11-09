@@ -1,12 +1,8 @@
 package com.unitap.unitap.Activities.Abstracted;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,7 +15,7 @@ import com.unitap.unitap.Activities.WalletActivity;
 import com.unitap.unitap.Activities.testingHCEActivity;
 import com.unitap.unitap.Activities.testingNDEFActivity;
 import com.unitap.unitap.Exceptions.InheritedExceptions.NFCException;
-import com.unitap.unitap.NFCBackend.NFCPreparation;
+import com.unitap.unitap.NFCBackend.NDEF.NFCPreparation;
 import com.unitap.unitap.R;
 
 public abstract class NavigationPane extends AppCompatActivity
@@ -176,4 +172,5 @@ public abstract class NavigationPane extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
 }

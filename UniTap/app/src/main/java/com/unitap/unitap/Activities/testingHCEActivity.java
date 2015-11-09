@@ -1,15 +1,12 @@
 package com.unitap.unitap.Activities;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.unitap.unitap.Activities.Abstracted.NavigationPane;
-import com.unitap.unitap.Exceptions.InheritedExceptions.NFCException;
-import com.unitap.unitap.NFCBackend.Messaging.NFCSendMessage;
-import com.unitap.unitap.NFCBackend.NFCPreparation;
+import com.unitap.unitap.NFCBackend.NDEF.Messaging.NFCSendMessage;
 import com.unitap.unitap.R;
 
 /**

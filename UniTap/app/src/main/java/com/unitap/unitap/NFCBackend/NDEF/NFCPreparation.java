@@ -1,4 +1,4 @@
-package com.unitap.unitap.NFCBackend;
+package com.unitap.unitap.NFCBackend.NDEF;
 
 import android.app.Activity;
 import android.nfc.NfcAdapter;

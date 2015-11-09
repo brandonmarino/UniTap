@@ -1,4 +1,4 @@
-package com.unitap.unitap.NFCBackend.Messaging;
+package com.unitap.unitap.NFCBackend.NDEF.Messaging;
 
 import android.app.Activity;
 import android.net.Uri;

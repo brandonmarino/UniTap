@@ -1,4 +1,6 @@
 package com.unitap.unitap.Encryption;
+import com.unitap.unitap.Exceptions.InheritedExceptions.EncryptionException;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
@@ -23,7 +25,7 @@ public class AdvancedEncryptionStandard
      * @param plainText Some text to encrypt with the stored key
      * @return An encrypted string
      */
-    public String encrypt(String plainText)
+    public String encrypt(String plainText) throws EncryptionException
     {
         byte[] plainBytes = encrypt(plainText.getBytes());
         if (plainBytes == null)
@@ -36,7 +38,7 @@ public class AdvancedEncryptionStandard
      * @param bArray input byteArray
      * @return an encrypted byte array
      */
-    public byte[] encrypt(byte[] bArray)
+    public byte[] encrypt(byte[] bArray) throws EncryptionException
     {
         try {
             Cipher cipher = getCipher(Cipher.ENCRYPT_MODE);
@@ -44,12 +46,11 @@ public class AdvancedEncryptionStandard
 
             return Base64.encodeBase64(encryptedBytes);
         }catch(Exception e){
-            e.printStackTrace();
+            throw new EncryptionException("Failed to Encrypt String");
         }
-        return null;
     }
 
-    public String decrypt(String encrypted)
+    public String decrypt(String encrypted) throws EncryptionException
     {
         byte[] plainBytes = decrypt(encrypted.getBytes());
         if (plainBytes == null)
@@ -62,7 +63,7 @@ public class AdvancedEncryptionStandard
      * @param bArray input byte array
      * @return a decrypted byte array
      */
-    public byte[] decrypt(byte[] bArray)
+    public byte[] decrypt(byte[] bArray) throws EncryptionException
     {
         try {
             Cipher cipher = getCipher(Cipher.DECRYPT_MODE);
@@ -70,9 +71,8 @@ public class AdvancedEncryptionStandard
 
             return plainBytes;
         }catch(Exception e){
-            e.printStackTrace();
+            throw new EncryptionException("Failed to Decrypt String");
         }
-        return null;
     }
 
     private Cipher getCipher(int cipherMode) throws Exception

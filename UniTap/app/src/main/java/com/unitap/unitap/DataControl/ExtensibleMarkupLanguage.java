@@ -1,5 +1,7 @@
 package com.unitap.unitap.DataControl;
 
+import com.unitap.unitap.Exceptions.InheritedExceptions.EncryptionException;
+
 import org.simpleframework.xml.*;
 import org.simpleframework.xml.core.Persister;
 
@@ -17,15 +19,16 @@ public abstract class ExtensibleMarkupLanguage {
      * @param <T> The generic object which is being xml'd
      * @return the string of xml
      */
-    public static <T> String marshal(T object)
+    public static <T> String marshal(T object) throws EncryptionException
     {
         Serializer serializer = new Persister();
         StringWriter sw = new StringWriter();
         try {
             serializer.write(object, sw);
             return sw.toString();
-        }catch(Exception e){e.printStackTrace();}
-        return null;
+        }catch(Exception e){
+            throw new EncryptionException("Could not marshal object");
+        }
     }
 
     /**
@@ -35,7 +38,7 @@ public abstract class ExtensibleMarkupLanguage {
      * @param typeParameter This main root Class type which is getting Marshalled.  Can be found with object.getClass()
      * @return Some Generic type which has been generated from the XML string
      */
-    public static <T> T unMarshal(String xml, Class<T> typeParameter)
+    public static <T> T unMarshal(String xml, Class<T> typeParameter) throws EncryptionException
     {
         Serializer serializer = new Persister();
         StringReader sr = new StringReader(xml);
@@ -43,8 +46,8 @@ public abstract class ExtensibleMarkupLanguage {
             T output = typeParameter.newInstance();
             serializer.read(output, sr);
             return output;
-        }catch(Exception e){e.printStackTrace();}
-        return null;
-        //if this returns null, you have a corrupt file.
+        }catch(Exception e){
+            throw new EncryptionException("Could not unmarshal file into an object");
+        }
     }
 }

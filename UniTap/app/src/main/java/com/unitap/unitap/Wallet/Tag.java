@@ -1,31 +1,23 @@
 package com.unitap.unitap.Wallet;
 
-
-import android.content.Context;
 import android.media.Image;
-
-import com.unitap.unitap.Exceptions.InheritedExceptions.VirtualTagFormatException;
-import com.unitap.unitap.R;
-
 import org.simpleframework.xml.Default;
 
 import java.util.Comparator;
 import java.util.Date;
-
-import it.gmariotti.cardslib.library.internal.Card;
-
+import com.unitap.unitap.Wallet.Tag;
 /**
  * This is the physical representation of the Tag itself.  These will need to be stored in some XML document on closure of the application.
  * Created by Brandon Marino on 9/22/2015.
  */
 @Default
-public class Tag extends Card{
+public class Tag{
     private String name;
-    //private Image picture;
+    //private Image picture = getDrawableResource(image);
     private Date addedDate;
     private String payload;
-    public Tag(Context context) {
-        super(context, R.layout.content_wallet);
+
+    public Tag() {
         this.name = "Generic";
         this.payload = "THIS IS A MESSAGE TO BE SEND BY NFC";
     }
@@ -38,13 +30,13 @@ public class Tag extends Card{
      *                param id the id of the vendor/card type
      * @param payload the specific payload which needs to be dumped to the NDEF device
      */
-    public Tag(Context context, String name, /*Image picture, */ String payload) {
-        super(context, R.layout.content_wallet);
+    public Tag(String name, /*Image picture, */ String payload) {
+        //super(context, R.layout.content_wallet);
         /**
          * Check the format of the tag.  Names and images can be fixed, however vendor id and payloads cannot.
          */
         //if (payload == null || payload.isValid())
-        //    throw new VirtualTagFormatException("payload is either empty or corrupt");
+        //    throw new IoXmlException("payload is either empty or corrupt");
         this.name = name;
         //this.picture = new Image();
         this.addedDate = new Date();
@@ -111,8 +103,8 @@ public class Tag extends Card{
      ************************************************************/
     static class TagSortByInstitutionName implements Comparator<Tag> {
         public int compare(Tag tag1, Tag tag2){
-            String institutionName1 = tag1.getName();
-            String institutionName2 = tag2.getName();
+            String institutionName1 = tag1.getName().toUpperCase();
+            String institutionName2 = tag2.getName().toUpperCase();
             return institutionName1.compareTo(institutionName2);
         }
     }

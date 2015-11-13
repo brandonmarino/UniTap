@@ -20,23 +20,13 @@
 
         <activity
             android:name=".Activities.WalletActivity"
-            android:label="@string/title_activity_wallet"
+            android:label="@string/app_name"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".Activities.CardAdder"
-            android:label="@string/title_activity_card_adder"
-            android:parentActivityName=".Activities.WalletActivity"
-            android:launchMode="singleTask">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.unitap.unitap.Activities.WalletActivity" />
         </activity>
 
         <!--NFC Testers-->

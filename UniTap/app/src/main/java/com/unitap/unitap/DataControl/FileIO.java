@@ -1,6 +1,7 @@
 package com.unitap.unitap.DataControl;
 
 import java.io.*;
+import com.unitap.unitap.Exceptions.InheritedExceptions.IoXmlException;
 
 /**This abstract class will handle all direct FileIO
  * Created by Brandon Marino on 10/2/2015.
@@ -12,7 +13,7 @@ public abstract class FileIO {
      * @param file Some file
      * @return a string
      */
-    public static String readFromFile(File file){
+    public static String readFromFile(File file) throws IoXmlException{
         try {
             if (file.exists()) {
                 Reader reader = new FileReader(file);
@@ -27,11 +28,11 @@ public abstract class FileIO {
                 }
                 return output.toString();
             }
+            else
+                return null;
         }catch(IOException e){
-            e.printStackTrace();
+            throw new IoXmlException("Cannot read from this file");
         }
-
-        return null;
     }
 
     /**
@@ -39,7 +40,7 @@ public abstract class FileIO {
      * @param file some file which you wish to store
      * @param string some string you with to store
      */
-    public static void saveToFile(File file, String string){
+    public static boolean saveToFile(File file, String string) throws IoXmlException{
         try {
             if (!file.exists())
                 file.createNewFile();
@@ -48,8 +49,9 @@ public abstract class FileIO {
             outputStream.write(string.getBytes());
             //close streams
             outputStream.close();
+            return true;
         }catch(IOException e){
-            e.printStackTrace();
+            throw new IoXmlException("Cannot save string to file");
         }
     }
 }

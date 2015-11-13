@@ -2,7 +2,11 @@ package com.unitap.unitap.Wallet;
 
 //SimpleXML
 
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Default;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Root;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,20 +14,25 @@ import java.util.Collections;
 /** This will be the wallet which will contain all of the users tags
  * Created by Brandon Marino on 9/22/2015.
  */
-@Default
-public class Wallet extends ArrayList {
-    //this is the specific list that contains all of their tags
-    //maybe later, we could support multiple wallets, and those wallets could each be assigned to a username
+@Root
+public class Wallet{
+    @ElementList(inline=true)
+    private ArrayList<Tag> wallet = new ArrayList<>(); //this is the specific list that contains all of their tags
+    @Attribute
     private String username;    //for later when we implement multiple wallets
-    //this should be moved to a setting option which writes to a config file
-    public enum SORT_TYPE {institution_name, institution_id, added_date}
-    private SORT_TYPE sortBy = SORT_TYPE.institution_name;
+    @Element
+    private Integer sortBy = 0;
+
+    //below fields should be moved to a settings activity which writes to a config file
+    //public enum SORT_TYPE {institution_name, institution_id, added_date}
+    //private SORT_TYPE sortBy = SORT_TYPE.institution_name;
 
     /**
      * Default constructor for simpleXML
      */
     public Wallet(){
         this("");
+        wallet = new ArrayList<>();
     }
 
     /**
@@ -44,7 +53,7 @@ public class Wallet extends ArrayList {
      * @return the actual full tag
      */
     public Tag getByIndex(int index){
-        return (Tag) this.get(index);
+        return (Tag) wallet.get(index);
     }
 
     /**
@@ -55,6 +64,13 @@ public class Wallet extends ArrayList {
         return username;
     }
 
+    /**
+     * Need the wallet for display purposes.
+     * @return the wallet
+     */
+    public ArrayList<Tag> getWallet(){
+        return wallet;
+    }
     /*****************************************
      *      Adders
      *****************************************/
@@ -64,9 +80,9 @@ public class Wallet extends ArrayList {
      * @return if the card was inserted, sorted and the list still contains it
      */
     public boolean addTag(Tag newTag){
-        this.add(newTag);
+        wallet.add(newTag);
         sort(); //should be sorted as the user sees fit
-        return (this.contains(newTag));
+        return (wallet.contains(newTag));
     }
 
     /********************************************
@@ -76,21 +92,20 @@ public class Wallet extends ArrayList {
      * Change the sort type
      * @param sortBy by type
      */
-    public void changeSort(SORT_TYPE sortBy){
+    //public void changeSort(SORT_TYPE sortBy){
+    //    this.sortBy = sortBy;
+    //}
+
+    public void changeSort(int sortBy){
         this.sortBy = sortBy;
     }
 
     public void sort(){
         switch (sortBy){
-            case institution_name:
+            case 0:
                 sortByInstitutionalName();
                 break;
-            /*
-            case institution_id:
-                sortByInstitutionId();
-                break;
-                */
-            case added_date:
+            case 1:
                 sortByDate();
                 break;
             default:
@@ -99,16 +114,10 @@ public class Wallet extends ArrayList {
     }
 
     private void sortByInstitutionalName(){
-        Collections.sort(this, new Tag.TagSortByInstitutionName());
+        Collections.sort(wallet, new Tag.TagSortByInstitutionName());
     }
-/*
-    private void sortByInstitutionId(){
-        Collections.sort(this, new Tag.TagSortByInstitutionId() );
-    }
-*/
+
     private void sortByDate(){
-        Collections.sort(this, new Tag.TagSortByDate() );
+        Collections.sort(wallet, new Tag.TagSortByDate() );
     }
-
-
 }

@@ -2,14 +2,18 @@ package com.unitap.unitap.NFCBackend.HCE;
 
 import android.app.Activity;
 import android.nfc.NfcAdapter;
-import android.nfc.NfcAdapter.ReaderCallback;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.os.Bundle;
 import android.widget.ListView;
 import com.unitap.unitap.NFCBackend.HCE.IsoDepTransceiver.OnMessageReceived;
+import android.nfc.NfcAdapter.ReaderCallback;
 import com.unitap.unitap.R;
 
+/**
+ * Use-less for the project, its just from the example here: https://github.com/grundid/host-card-emulation-sample.  Open sourced, free use policy.
+ * Leaving it here for reference if we need it.
+ */
 public class MainActivity extends Activity implements OnMessageReceived, ReaderCallback {
 
     private NfcAdapter nfcAdapter;
@@ -18,6 +22,7 @@ public class MainActivity extends Activity implements OnMessageReceived, ReaderC
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
         //listView = (ListView)findViewById(R.id.listView);

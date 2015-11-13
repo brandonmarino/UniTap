@@ -9,6 +9,7 @@ Current Version
 The Purpose of this project is to build a virrtual wallet which contains many virtual NFC tags.  These tags will work in tandem with a terminal allowing the user access to buildings and the ability to make payments and spend loyalty points.
 
 Done
+
 1. Simple NDEF messaging between two devices
 2. Simple Wallet to XML exportation
 3. Implement encryption on a string

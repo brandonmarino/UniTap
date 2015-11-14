@@ -187,6 +187,8 @@ public class WalletActivity extends NavigationPane {
 
                                         public void onClick(DialogInterface dialog, int whichButton) {
                                             cardList.remove(card);
+                                            wallet.removeTag(tag);
+                                            saveWallet();
                                             mCardArrayAdapter.remove(card);
                                             mCardArrayAdapter.notifyDataSetChanged();
                                         }})

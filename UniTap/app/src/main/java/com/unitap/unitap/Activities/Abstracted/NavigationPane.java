@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.unitap.unitap.Activities.SettingsActivity;
 import com.unitap.unitap.Activities.WalletActivity;
 import com.unitap.unitap.Activities.testingHCEActivity;
 import com.unitap.unitap.Activities.testingNDEFActivity;
@@ -116,7 +117,8 @@ public abstract class NavigationPane extends AppCompatActivity
                 item.setTitle("Log In");
             }
         } else if (id == R.id.nav_settings) {
-            //go to app settings
+            newIntent = new Intent(this, SettingsActivity.class);
+            startActivity(newIntent);
         } else if (id == R.id.nav_share) {
             //share the app via facebook and stuff
         } else if (id == R.id.nav_about) {

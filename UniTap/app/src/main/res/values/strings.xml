@@ -52,9 +52,18 @@
         <item>Edit</item>
         <item>Delete</item>
     </string-array>
+    <string-array name="setting_options">
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+    <string-array name="setting_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 
     <!-- added back because it crashed-->
     <string name="title_activity_card_adder">CardAdder</string>
+    <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Example settings for Data & Sync -->
 

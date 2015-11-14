@@ -147,6 +147,8 @@ public class WalletActivity extends NavigationPane {
             }
         });
 
+        //When a card is pressed on for a longer time, a dialog will pop up indicating
+        //if user wants to delete or edit card
         newCard.setOnLongClickListener(new Card.OnLongCardClickListener() {
             @Override
             public boolean onLongClick(final Card card, View view) {

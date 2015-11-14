@@ -16,5 +16,7 @@
     <style name="AppTheme.NoActionBar.AppBarOverlay"
         parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.Light" parent="android:Theme.Holo.Light" />
+    <style name="AppTheme.Dark" parent="android:Theme.Holo" />
 
 </resources>

@@ -5,8 +5,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -47,9 +49,23 @@ public class WalletActivity extends NavigationPane {
     private CardArrayAdapter mCardArrayAdapter;
     private MaterialDialog mMaterialDialog;
     private String nameOfNewCard;
+    String themeChoice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        int themeId = 3;
+        String choice = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("themeType", "3");
+        if(choice.equals("1")){
+            themeId = R.style.AppTheme_Light;
+        }
+        if(choice.equals("2")){
+            themeId = R.style.AppTheme_Dark;
+        }
+        if(choice.equals("3")){
+            themeId = R.style.AppTheme_NoActionBar;
+        }
+        setTheme(themeId);
         setNewContentView(R.layout.activity_wallet);
         super.onCreate(savedInstanceState);
 
@@ -122,6 +138,7 @@ public class WalletActivity extends NavigationPane {
     public void onResume(){
         super.onResume();
         //restoreWallet();
+
     }
 
     private void addCard(final Tag tag){
@@ -244,6 +261,12 @@ public class WalletActivity extends NavigationPane {
             return false;
         }
         return true;
+    }
+
+    private void showUserSettings() {
+        SharedPreferences sharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        themeChoice = sharedPrefs.getString("themeType", "3");
     }
 
     private String getKey(){

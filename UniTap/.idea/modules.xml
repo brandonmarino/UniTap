@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/UniTap.iml" filepath="$PROJECT_DIR$/UniTap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/commons-codec-1.10/commons-codec-1.10.iml" filepath="$PROJECT_DIR$/commons-codec-1.10/commons-codec-1.10.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simple-xml-2.7.1/simple-xml-2.7.1.iml" filepath="$PROJECT_DIR$/simple-xml-2.7.1/simple-xml-2.7.1.iml" />
+    </modules>
+  </component>
+</project>

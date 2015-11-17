@@ -113,7 +113,6 @@ public class WalletActivity extends NavigationPane {
     @Override
     public void onResume(){
         super.onResume();
-        //restoreWallet();
     }
 
     private void addCard(Tag tag){
@@ -141,7 +140,6 @@ public class WalletActivity extends NavigationPane {
             String xml = ExtensibleMarkupLanguage.marshal(wallet);
             String encryptedXml = crypt.encrypt(xml);
             FileIO.saveToFile(walletCache, encryptedXml);
-            dialogMessage("Save Wallet Success", xml);
             return true;
 
         }catch(ProjectExceptions e){
@@ -158,7 +156,6 @@ public class WalletActivity extends NavigationPane {
                 String xml = "" + crypt.decrypt(encryptedXml);
                 if (!xml.equals("")) {
                     Wallet newWallet = ExtensibleMarkupLanguage.unMarshal(xml, (new Wallet()).getClass());
-                    dialogMessage("Restored Wallet", xml);
 
                     //map tags to cards
                     for(Tag currentTag: newWallet.getWallet()){

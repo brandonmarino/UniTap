@@ -1,7 +1,11 @@
 package com.unitap.unitap.Activities;
 
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.nfc.cardemulation.HostApduService;
 import android.nfc.tech.IsoDep;
 import android.os.Bundle;
 import android.view.View;
@@ -9,13 +13,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.unitap.unitap.Activities.Abstracted.NavigationPane;
+import com.unitap.unitap.DataControl.FileIO;
 import com.unitap.unitap.NFCBackend.HCE.IsoDepAdapter;
 import com.unitap.unitap.NFCBackend.HCE.IsoDepTransceiver;
 
 import com.unitap.unitap.NFCBackend.HCE.IsoDepTransceiver.OnMessageReceived;
 import android.nfc.NfcAdapter.ReaderCallback;
 
+import com.unitap.unitap.NFCBackend.HCE.MyHostApduService;
 import com.unitap.unitap.R;
+
+import java.io.File;
 
 /**
  * In order to run this app, on your computer, you'll need to download the files here:
@@ -29,7 +37,8 @@ public class testingHCEActivity extends NavigationPane implements OnMessageRecei
 
     private NfcAdapter nfcAdapter;
     private IsoDepAdapter isoDepAdapter;
-
+    //private HostApduService myHostApduService = new MyHostApduService();
+    Intent serviceIntent;
     /***********************************************************************************************
      *                      App State Functions (Create, Pause, Resume)
      ***********************************************************************************************/
@@ -47,10 +56,8 @@ public class testingHCEActivity extends NavigationPane implements OnMessageRecei
         isoDepAdapter = new IsoDepAdapter(getLayoutInflater());
         //listView.setAdapter(isoDepAdapter);
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-
-        //
+        serviceIntent = new Intent(this, MyHostApduService.class);
     }
-
 
     /**
      * What the app does once the phone enters the app (Does this the first time the app is launched, and then every time after that)
@@ -60,6 +67,17 @@ public class testingHCEActivity extends NavigationPane implements OnMessageRecei
         super.onResume();
         nfcAdapter.enableReaderMode(this, this, NfcAdapter.FLAG_READER_NFC_A | NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
                 null);
+
+        //serviceIntent.putExtra("hello world", "android.intent.extra.TEXT");
+        startService(serviceIntent);
+
+        /*
+        boolean apduRunning = isMyServiceRunning( (new MyHostApduService() ).getClass());
+        if (apduRunning)
+            dialogMessage("Service Operating", "Service is running in the backgroud");
+        else
+            dialogMessage("Service Not Operating", "Service is dead");
+        */
     }
 
     /**
@@ -68,7 +86,23 @@ public class testingHCEActivity extends NavigationPane implements OnMessageRecei
     @Override
     public void onPause() {
         super.onPause();
+        stopService(serviceIntent);
         nfcAdapter.disableReaderMode(this);
+    }
+
+    /**
+     * Check if the HostAPDUService is currently running
+     * @param serviceClass
+     * @return
+     */
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /***********************************************************************************************
@@ -140,7 +174,8 @@ public class testingHCEActivity extends NavigationPane implements OnMessageRecei
             String toTextBox = "Your last sent Message: \n\n" + outgoingMessage.getText().toString();
             incomingMessage.setText(toTextBox);
             //perform the sending function
-            sendMessage(outgoingMessage.getText().toString());
+            //sendMessage(outgoingMessage.getText().toString());
+            //myHostApduService.setMessage("");
             //NFCSendMessage.send(this, outgoingMessage.getText().toString());
         } else
             dialogMessage("It's Empty", "You can't send an empty message!");

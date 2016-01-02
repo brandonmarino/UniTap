@@ -143,7 +143,7 @@ public class WalletActivity extends NavigationPane {
 
     private void addCard(final Tag tag){
         //logo on card
-        int image = R.drawable.tagstand_logo_icon;
+        final int image = R.drawable.tagstand_logo_icon;
         Card newCard = new Card(this, R.layout.content_wallet);
 
         //Make card header
@@ -160,7 +160,10 @@ public class WalletActivity extends NavigationPane {
         newCard.setOnClickListener(new Card.OnCardClickListener() {
             @Override
             public void onClick(Card card, View view) {
-
+                Intent intent = new Intent(wActivity, CardActivity.class);
+                intent.putExtra("cardName", tag.getName());
+                intent.putExtra("cardImage", image);
+                startActivity(intent);
             }
         });
 

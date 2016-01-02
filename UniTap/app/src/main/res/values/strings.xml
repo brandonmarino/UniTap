@@ -66,6 +66,7 @@
     <!-- added back because it crashed-->
     <string name="title_activity_card_adder">CardAdder</string>
     <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_card">CardActivity</string>
 
     <!-- Example settings for Data & Sync -->
 

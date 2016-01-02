@@ -44,6 +44,15 @@
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".Activities.CardActivity"
+            android:label="@string/title_activity_card"
+            android:parentActivityName=".Activities.WalletActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.unitap.unitap.Activities.WalletActivity" />
+        </activity>
     </application>
 
 </manifest>

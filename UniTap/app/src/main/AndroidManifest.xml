@@ -32,7 +32,7 @@
 
         <!--NFC Testers-->
         <activity
-            android:name=".Activities.testingNDEFActivity"
+            android:name=".NFCBackend.NDEF.Messaging.testingNDEFActivity"
             android:label="Testing NDEF"
             android:launchMode="singleTask">
         </activity>
@@ -44,7 +44,7 @@
         </activity>
 
         <service
-            android:name=".NFCBackend.HCE.MyHostApduService"
+            android:name=".NFCBackend.HCE.UnitapApduService"
             android:exported="true"
             android:permission="android.permission.BIND_NFC_SERVICE" >
             <intent-filter>

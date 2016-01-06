@@ -1,11 +1,12 @@
-package com.unitap.unitap.Activities;
+package com.unitap.unitap.NFCBackend.NDEF.Messaging;
 
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.unitap.unitap.NFCBackend.NDEF.Messaging.NFCSendMessage;
+import com.unitap.unitap.NFCBackend.NDEF.Messaging.NFCMessaging;
 import com.unitap.unitap.R;
 import com.unitap.unitap.Activities.Abstracted.NavigationPane;
 
@@ -34,6 +35,29 @@ public class testingNDEFActivity extends NavigationPane {
         setToolbarTitle("NDEF Testing");
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        //ensure NDEF is operational on this device
+        String ndefFailure = NDEFprepare();
+        if( !ndefFailure.isEmpty() )
+            dialogMessage("NFC Issues!", ndefFailure);
+    }
+
+    private String NDEFprepare() {
+        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (nfcAdapter == null)
+            return "NFC is not available on this device";
+        if (!nfcAdapter.isEnabled())
+            return "NFC hardware is not enabled on this device";
+        if (!nfcAdapter.isNdefPushEnabled())
+            return "NDEF Messaging is disabled on this device";
+
+        /*
+        This code should allow a message to be pushed from one phone to another. I don't really know how it works, just that it should
+         */
+        return "";
+    }
 
     /***********************************************************************************************
      *                      Button-Action Handlers
@@ -54,7 +78,7 @@ public class testingNDEFActivity extends NavigationPane {
             String toTextBox = "Your last sent Message: \n\n" + outgoingMessage.getText().toString();
             incomingMessage.setText(toTextBox);
             //perform the sending function
-            NFCSendMessage.send(this, outgoingMessage.getText().toString());
+            NFCMessaging.send(this, outgoingMessage.getText().toString());
         } else
             dialogMessage("It's Empty", "You can't send an empty message!");
     }

@@ -10,7 +10,7 @@ import android.nfc.NfcEvent;
 /**
  * Created by Brandon Marino on 10/1/2015.
  */
-public class NFCSendMessage {
+public class NFCMessaging {
     /**
      * Send a message to another device via NFC
      * @param activity the main activity

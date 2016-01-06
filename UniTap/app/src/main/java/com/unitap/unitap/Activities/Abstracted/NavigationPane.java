@@ -13,9 +13,7 @@ import android.view.MenuItem;
 
 import com.unitap.unitap.Activities.WalletActivity;
 import com.unitap.unitap.Activities.testingHCEActivity;
-import com.unitap.unitap.Activities.testingNDEFActivity;
-import com.unitap.unitap.Exceptions.InheritedExceptions.NFCException;
-import com.unitap.unitap.NFCBackend.NDEF.NFCPreparation;
+import com.unitap.unitap.NFCBackend.NDEF.Messaging.testingNDEFActivity;
 import com.unitap.unitap.R;
 
 public abstract class NavigationPane extends AppCompatActivity
@@ -123,20 +121,6 @@ public abstract class NavigationPane extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        //ensure NFC is operational on this device
-        try{
-            NFCPreparation.prepare(this);
-        }catch (NFCException nfcException){
-            String nfcMessage = nfcException.getMessage();
-            if (nfcMessage != null && !nfcMessage.equals(""))
-                dialogMessage("NFC Issues!",nfcMessage);
-        }
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){

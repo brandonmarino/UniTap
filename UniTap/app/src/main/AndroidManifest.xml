@@ -30,12 +30,7 @@
             </intent-filter>
         </activity>
 
-        <!--NFC Testers-->
-        <activity
-            android:name=".NFCBackend.NDEF.Messaging.testingNDEFActivity"
-            android:label="Testing NDEF"
-            android:launchMode="singleTask">
-        </activity>
+        <!--NFC HCE-->
 
         <activity
             android:name=".Activities.HCEActivity"

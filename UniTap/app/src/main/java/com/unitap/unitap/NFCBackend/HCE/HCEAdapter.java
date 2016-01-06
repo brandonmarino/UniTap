@@ -8,10 +8,8 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.util.Log;
-
 import com.unitap.unitap.Activities.HCEActivity;
 
-import java.util.Observable;
 
 /**The main HCE activity will use this Adapter in order to send data to the other device.  From the external system's view, this will function will simply pass messages and notify the activity when a new message is received
  * Created by Brandon Marino on 1/6/2016.

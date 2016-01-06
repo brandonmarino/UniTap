@@ -3,7 +3,6 @@
 
     <group android:checkableBehavior="single">
         <item android:id="@+id/nav_wallet" android:icon="@android:drawable/ic_menu_manage" android:title="@string/nav_wallet" />
-        <item android:id="@+id/nav_testNDEF" android:icon="@android:drawable/ic_menu_directions" android:title="@string/nav_testingNDEF" />
         <item android:id="@+id/nav_testHCE" android:icon="@android:drawable/ic_menu_always_landscape_portrait" android:title="@string/nav_testingHCE" />
         <item android:id="@+id/nav_loginout" android:icon="@android:drawable/ic_menu_slideshow" android:title="@string/nav_loginout" />
         <item android:id="@+id/nav_settings" android:icon="@android:drawable/ic_menu_preferences" android:title="@string/nav_settings" />

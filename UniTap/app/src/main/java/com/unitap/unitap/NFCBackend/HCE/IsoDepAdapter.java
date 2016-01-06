@@ -2,7 +2,6 @@ package com.unitap.unitap.NFCBackend.HCE;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

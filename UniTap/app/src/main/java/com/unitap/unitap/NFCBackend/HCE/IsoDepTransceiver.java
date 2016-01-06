@@ -1,9 +1,7 @@
 package com.unitap.unitap.NFCBackend.HCE;
 
 import java.io.IOException;
-
 import android.nfc.tech.IsoDep;
-import android.util.Log;
 
 public class IsoDepTransceiver implements Runnable {
 

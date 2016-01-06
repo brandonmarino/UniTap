@@ -1,7 +1,5 @@
 package com.unitap.unitap.NFCBackend.HCE;
 
-import android.app.AlertDialog;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,11 +10,11 @@ import android.util.Log;
 
 public class UnitapApduService extends HostApduService {
 
-    private String newMessage = "";
-
     /***********************************************************************************************
      *                      App State Functions (Create, Pause, Resume)
      ***********************************************************************************************/
+
+    private String lastMessage;
 
     /**
      * What happens when the service is first run using startService()
@@ -54,7 +52,6 @@ public class UnitapApduService extends HostApduService {
      *                      APDU Processing, HCE Messaging
      ***********************************************************************************************/
 
-
     /**
      * Receives an APDU (if that APDU was registered to the same AID as the app/service)
      * @param apdu Tag's payload.  Contains a message, some header bytes and the UID
@@ -63,21 +60,69 @@ public class UnitapApduService extends HostApduService {
      */
     @Override
     public byte[] processCommandApdu(byte[] apdu, Bundle extras) {
-        if (!newMessage.isEmpty()) {
-            Log.v("HCEDEMO", "Sending User Message");
-            return newMessage.getBytes();
-        }
+        if (apdu==null)
+            apdu = "".getBytes();
 
-        if (selectAidApdu(apdu)) {
+        String response = new String(apdu);
+        if (!response.isEmpty()) {
+            Log.v("Resp-Term", new String(apdu));
+            if (selectAidApdu(apdu)) {
+                Log.v("Analyzing Response", "Select APDU");
+                //decrypt, etc
+                //if CRC matches
+                return "ACK#Hello".getBytes();
+                //else return ERR#Hello
+            } else if (ackApdu(apdu)) {
+                //nothing else needed in the exchange
+                return null;
+            } else if (errorApdu(apdu)) {
+                //retry HCE send
+                return lastMessage.getBytes();
+            } else if (dataApdu(apdu)) {
+                //send message out
+                sendToBroadcastReceiver(response);
+                return "ACK#Received".getBytes();
+            }
+        }
+        return "ERR#Received".getBytes();
+    }
 
-            Log.v("HCEDEMO", "Application selected");
-            return "Hello Terminal!".getBytes();
-        }
-        else {
-            //log apdu into logcat
-            Log.v("HCEDEMO", "Received " + new String(apdu));
-            return "Response From Android".getBytes();
-        }
+    /**
+     * Send a response to the terminal
+     * @param message
+     */
+    private void sendToTerminal(String message){
+        lastMessage = message;
+        //generate CRC and append to message with # separator
+        //encrypt message
+        sendResponseApdu(message.getBytes());
+    }
+
+    /**
+     * Check if the apdu is an acknowledgement
+     * @param candidate some apdu from a device
+     */
+    private boolean ackApdu(byte[] candidate){
+        String response = new String(candidate);
+        return response.regionMatches(0,"ACK#",0,4);
+    }
+
+    /**
+     * Check if the apdu is an error and the lsat message needs to be resent
+     * @param candidate some apdu from a device
+     */
+    private boolean errorApdu(byte[] candidate){
+        String response = new String(candidate);
+        return response.regionMatches(0,"ERR#",0,4);
+    }
+
+    /**
+     * Check if the apdu is an error and the lsat message needs to be resent
+     * @param candidate some apdu from a device
+     */
+    private boolean dataApdu(byte[] candidate){
+        String response = new String(candidate);
+        return response.regionMatches(0, "DAT#", 0, 4);
     }
 
     /**check if this is the very first APDU from the broadcaster
@@ -90,9 +135,8 @@ public class UnitapApduService extends HostApduService {
     }
 
     /***********************************************************************************************
-     *                      Receive Messages from another Activity which passed a defined Filter
+     *               Receive Messages from another Activity which passed a defined Filter
      ***********************************************************************************************/
-
 
     /**
      * Receive some data (Message) from an external Activity.  Used for sending direct messages
@@ -100,22 +144,31 @@ public class UnitapApduService extends HostApduService {
     final BroadcastReceiver hceNotificationsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (1==1) {
-                String hcedata = intent.getStringExtra("hcedata");
-                // TODO: do something with the received data
-                newMessage = hcedata;
-                Log.v("Received HCE-Service", newMessage);
-            }
+
+            String hcedata = intent.getStringExtra("hcedata");
+            sendToTerminal(hcedata);
+            Log.v("Send-Term", hcedata);
         }
     };
 
     /**
      * Register a broadcast receiver for this Service
+     * This is to receive messages from the application using this service
      */
     private void registerBroadcastReceiver(){
         final IntentFilter hceNotificationsFilter = new IntentFilter();
         hceNotificationsFilter.addAction("unitap.action.NOTIFY_HCE_DATA");
         registerReceiver(hceNotificationsReceiver, hceNotificationsFilter);
         Log.v("Registering Receiver", "HCE Receiver");
+    }
+
+    /**
+     * Send a message out to the adapter/activity which is making use of the HCE peer messaging
+     * @param message some message to be send up to the other activity
+     */
+    public void sendToBroadcastReceiver(String message){
+        Intent intent = new Intent("unitap.action.NOTIFY_MAIN_DATA");
+        intent.putExtra("hcedata", message);
+        sendBroadcast(intent);
     }
 }

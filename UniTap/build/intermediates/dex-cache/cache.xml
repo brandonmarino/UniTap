@@ -2,46 +2,39 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\Danny\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.0.1\support-annotations-23.0.1.jar"
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\design\23.1.1\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
-        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\support-annotations-23.0.1-a5693e8438785fd60df970ba58289ef6ccc9ae10.jar" />
+        sha1="379471b2bd17d9737c050345c08e8c7d16589784">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-3fce280b2df1077e1186b852a725125b866e34ec.jar" />
     </item>
     <item
-        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.1\jars\classes.jar"
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\libs\internal_impl-23.1.1.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
-        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-a1d95049c850d38e99d522f885bc0eca2f66b238.jar" />
+        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\internal_impl-23.1.1-138925592bbf092111d4e7aaac546127935494a1.jar" />
     </item>
     <item
-        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\classes.jar"
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.1\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
-        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-3bc52b7e41216eac45792b73afc025f299770a7a.jar" />
+        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-56270cb1927afeb58d1d4179c8cdcbbf824e42e5.jar" />
     </item>
     <item
-        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\libs\internal_impl-23.0.1.jar"
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\22.1.1\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
-        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\internal_impl-23.0.1-7f4d74d2116bc76890eda4982e820bcda2a539ab.jar" />
+        sha1="22886d910315028a2b34b1ba068c265534ade87a">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-f0d35c8e671fdb1d460b47653bf475e7ef1dd96b.jar" />
     </item>
     <item
-        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\me.drakeet.materialdialog\library\1.2.2\jars\classes.jar"
+        jar="C:\Users\Danny\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.1.1\support-annotations-23.1.1.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="8646b1e69dd5d923d8866dc4311859f0fbca456c">
-        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-f81504a9f088922fd0d7db4bea5ed3ade7882609.jar" />
-    </item>
-    <item
-        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.github.gabrielemariotti.cards\cardslib-core\2.1.0\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="8190861e323934dad89d5e6b830ea66878c11970">
-        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-70492358aa80be8763c010d382dd7a32d11e26b3.jar" />
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\support-annotations-23.1.1-cca37822151b0b21ffdf04a4f17756a41f5da941.jar" />
     </item>
     <item
         jar="C:\Users\Danny\Documents\UniTap\UniTap\commons-codec-1.10\commons-codec-1.10.jar"
@@ -51,11 +44,11 @@
         <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\commons-codec-1.10-4239f56844681dd18b72adf4abc038f289dd4a1f.jar" />
     </item>
     <item
-        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\design\23.0.1\jars\classes.jar"
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="e5c61a3169221a89654ffcaaed47bba51cf071ad">
-        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-3c696ee8b5c7ce1d7f7e79d35924b8e118487d31.jar" />
+        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-a7d589ef9d62e6fd5ee109b3c06a7c211d83e1d5.jar" />
     </item>
     <item
         jar="C:\Users\Danny\Documents\UniTap\UniTap\simple-xml-2.7.1\simple-xml-2.7.1.jar"
@@ -65,11 +58,25 @@
         <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\simple-xml-2.7.1-53afa1232cb4b68725397b1a4a8d73ce84af5ad7.jar" />
     </item>
     <item
-        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\22.1.1\jars\classes.jar"
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.github.gabrielemariotti.cards\cardslib-core\2.1.0\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="22886d910315028a2b34b1ba068c265534ade87a">
-        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-f0d35c8e671fdb1d460b47653bf475e7ef1dd96b.jar" />
+        sha1="8190861e323934dad89d5e6b830ea66878c11970">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-70492358aa80be8763c010d382dd7a32d11e26b3.jar" />
+    </item>
+    <item
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="09c5e804bc67fc0580360043dff067df574a60d4">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-85dfcff6d9c5d83e314d71daeb84248ab3a9e943.jar" />
+    </item>
+    <item
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\me.drakeet.materialdialog\library\1.2.2\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8646b1e69dd5d923d8866dc4311859f0fbca456c">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-f81504a9f088922fd0d7db4bea5ed3ade7882609.jar" />
     </item>
 
 </items>

@@ -24,9 +24,9 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':commons-codec-1.10')
     compile project(':simple-xml-2.7.1')
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.android.support:design:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
     compile 'me.drakeet.materialdialog:library:1.2.2'
-    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:support-v4:23.1.1'
     compile 'com.github.gabrielemariotti.cards:cardslib-core:2.1.0'
 }

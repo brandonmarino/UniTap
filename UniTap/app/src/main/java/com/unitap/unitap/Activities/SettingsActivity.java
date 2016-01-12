@@ -16,24 +16,35 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SpinnerAdapter;
 
+import com.unitap.unitap.Activities.Abstracted.AppCompatPreferenceActivity;
 import com.unitap.unitap.Activities.Abstracted.NavigationPane;
 import com.unitap.unitap.R;
 
-public class SettingsActivity extends PreferenceActivity {
-    private AppCompatDelegate mDelegate;
+public class SettingsActivity extends AppCompatPreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        Bar bar = new Bar();
-        bar.show();
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; goto parent activity.
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 }
 

@@ -11,8 +11,8 @@ import com.unitap.unitap.R;
 
 public class HCEActivity extends NavigationPane {
 
-    private EditText outgoingMessage = (EditText) findViewById(R.id.outgoing);
-    private TextView hceLog = (TextView) findViewById(R.id.incoming);
+    private EditText outgoingMessage;
+    private TextView hceLog;
     private HCEAdapter hceAdapter;
 
     /***********************************************************************************************
@@ -30,6 +30,8 @@ public class HCEActivity extends NavigationPane {
         setToolbarTitle("HCE Activity");
         hceAdapter = new HCEAdapter(this);
         //hceAdapter.enableReading(); //haveing this in both the onCreate and onResume could cause issues
+        outgoingMessage = (EditText) findViewById(R.id.outgoing);
+        hceLog = (TextView) findViewById(R.id.incoming);
         hceLog.setText("H.C.E. Message Log:\n");
     }
 
@@ -42,7 +44,7 @@ public class HCEActivity extends NavigationPane {
      */
     @Override
     public void onResume() {
-        hceAdapter.enableReading();
+        //hceAdapter.enableReading();
         super.onResume();
     }
 
@@ -51,7 +53,7 @@ public class HCEActivity extends NavigationPane {
      */
     @Override
     public void onPause() {
-        hceAdapter.disableReader();
+        //hceAdapter.disableReader();
         super.onPause();
     }
 

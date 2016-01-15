@@ -29,7 +29,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        String choice = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("themeType", "3");
+        chooseTheme(choice);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -55,23 +57,27 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key){
-        int themeId = 0;
         String choice = sharedPreferences.getString(key, "themeType");
-
-        if(choice.equals("1")){
-            themeId = R.style.AppTheme_Light;
-            }
-        if(choice.equals("2")){
-            themeId = R.style.AppTheme_Dark;
-            }
-        if(choice.equals("3")){
-            themeId = R.style.AppTheme_NoActionBar;
-            }
-        setTheme(themeId);
-        setContentView(R.layout.activity_settings);
+        chooseTheme(choice);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    public void chooseTheme(String choice){
+        int themeId = 0;
+        if(choice.equals("1")){
+            themeId = R.style.AppTheme_Light;
+        }
+        if(choice.equals("2")){
+            themeId = R.style.AppTheme_Dark;
+        }
+        if(choice.equals("3")){
+            themeId = R.style.AppTheme_NoActionBar;
+        }
+        setTheme(themeId);
+        setContentView(R.layout.activity_settings);
+
     }
 
 }

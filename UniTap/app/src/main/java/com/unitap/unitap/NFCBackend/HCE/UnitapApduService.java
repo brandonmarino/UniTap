@@ -14,7 +14,8 @@ public class UnitapApduService extends HostApduService {
      *                      App State Functions (Create, Pause, Resume)
      ***********************************************************************************************/
 
-    private String lastMessage;
+    private String lastMessage = "";
+    private boolean enabled = false;
 
     /**
      * What happens when the service is first run using startService()
@@ -25,7 +26,6 @@ public class UnitapApduService extends HostApduService {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        registerBroadcastReceiver();
         return START_STICKY;
     }
 
@@ -34,8 +34,10 @@ public class UnitapApduService extends HostApduService {
      */
     @Override
     public void onDestroy(){
-        Log.v("Deregister Receiver", "HCE Receiver");
-        unregisterReceiver(hceNotificationsReceiver);   //remove the broadcastreciever
+        //Log.v("Deregister Receiver", "HCE Receiver + State-Change Receiver");
+        unregisterReceiver(hceNotificationsReceiver);   //remove the broadcast reciever
+        unregisterReceiver(stateChangeService);     //remove the state-change receiver
+        enabled = false;
         super.onDestroy();
     }
 
@@ -46,6 +48,7 @@ public class UnitapApduService extends HostApduService {
     @Override
     public void onDeactivated(int reason) {
         Log.i("HCEDEMO", "Deactivated: " + reason);
+
     }
 
     /***********************************************************************************************
@@ -60,31 +63,32 @@ public class UnitapApduService extends HostApduService {
      */
     @Override
     public byte[] processCommandApdu(byte[] apdu, Bundle extras) {
-        if (apdu==null)
-            apdu = "".getBytes();
-
-        String response = new String(apdu);
-        if (!response.isEmpty()) {
-            Log.v("Resp-Term", new String(apdu));
-            if (selectAidApdu(apdu)) {
-                Log.v("Analyzing Response", "Select APDU");
-                //decrypt, etc
-                //if CRC matches
-                return "ACK#Hello".getBytes();
-                //else return ERR#Hello
-            } else if (ackApdu(apdu)) {
-                //nothing else needed in the exchange
-                return null;
-            } else if (errorApdu(apdu)) {
-                //retry HCE send
-                return lastMessage.getBytes();
-            } else if (dataApdu(apdu)) {
-                //send message out
-                sendToBroadcastReceiver(response);
-                return "ACK#Received".getBytes();
+        registerBroadcastReceivers(); //register broadcasts receivers to handle communication
+        if (HCEAdapter.isActive() || apdu == null) {
+            String response = new String(apdu);
+            if (!response.isEmpty()) {
+                Log.v("Resp-Term", new String(apdu));
+                if (selectAidApdu(apdu)) {
+                    Log.v("Analyzing Response", "Select APDU");
+                    //decrypt, etc
+                    //if CRC matches
+                    return "ACK#Hello".getBytes();
+                    //else return ERR#Hello
+                } else if (ackApdu(apdu)) {
+                    //nothing else needed in the exchange
+                    return null;
+                } else if (errorApdu(apdu)) {
+                    //retry HCE send
+                    return lastMessage.getBytes();
+                } else if (requestApdu(apdu)) {
+                    //send message out
+                    sendToBroadcastReceiver(response);
+                    return "ACK#Received".getBytes();
+                }
             }
+            return "ERR#Received".getBytes();
         }
-        return "ERR#Received".getBytes();
+        return "u".getBytes();
     }
 
     /**
@@ -92,10 +96,12 @@ public class UnitapApduService extends HostApduService {
      * @param message
      */
     private void sendToTerminal(String message){
-        lastMessage = message;
-        //generate CRC and append to message with # separator
-        //encrypt message
-        sendResponseApdu(message.getBytes());
+        if (enabled) {
+            lastMessage = message;
+            //generate CRC and append to message with # separator
+            //encrypt message
+            sendResponseApdu(message.getBytes());
+        }
     }
 
     /**
@@ -120,9 +126,9 @@ public class UnitapApduService extends HostApduService {
      * Check if the apdu is an error and the lsat message needs to be resent
      * @param candidate some apdu from a device
      */
-    private boolean dataApdu(byte[] candidate){
+    private boolean requestApdu(byte[] candidate){
         String response = new String(candidate);
-        return response.regionMatches(0, "DAT#", 0, 4);
+        return response.regionMatches(0, "REQ#", 0, 4);
     }
 
     /**check if this is the very first APDU from the broadcaster
@@ -151,15 +157,41 @@ public class UnitapApduService extends HostApduService {
         }
     };
 
+    final BroadcastReceiver stateChangeService =  new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.v("ENTERED RECEIVER", "Hello");
+            String out = intent.getStringExtra("stateChange");
+            if (out == null)
+                return;
+            else
+                Log.v("Message", out);
+
+            if (out.toLowerCase().equals( "TRUE".toLowerCase())) {
+                Log.v("Reader State Change:", "ENABLED");
+                enabled = true;
+            }
+            else if (out.toLowerCase().equals("FALSE".toLowerCase())) {
+                Log.v("Reader State Change:", "DISABLED");
+                enabled = false;
+            }
+        }
+    };
+
     /**
      * Register a broadcast receiver for this Service
      * This is to receive messages from the application using this service
      */
-    private void registerBroadcastReceiver(){
+    private void registerBroadcastReceivers(){
         final IntentFilter hceNotificationsFilter = new IntentFilter();
         hceNotificationsFilter.addAction("unitap.action.NOTIFY_HCE_DATA");
         registerReceiver(hceNotificationsReceiver, hceNotificationsFilter);
         Log.v("Registering Receiver", "HCE Receiver");
+
+        final IntentFilter stateChangeNotificationsFilter = new IntentFilter();
+        stateChangeNotificationsFilter.addAction("unitap.action.READER_STATE_CHANGE");
+        registerReceiver(stateChangeService, stateChangeNotificationsFilter);
+        Log.v("Registering Receiver", "State Changer");
     }
 
     /**

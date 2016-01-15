@@ -14,77 +14,36 @@ import com.unitap.unitap.Activities.HCEActivity;
 /**The main HCE activity will use this Adapter in order to send data to the other device.  From the external system's view, this will function will simply pass messages and notify the activity when a new message is received
  * Created by Brandon Marino on 1/6/2016.
  */
-public class HCEAdapter implements NfcAdapter.ReaderCallback, IsoDepTransceiver.OnMessageReceived {
+public class HCEAdapter /*implements NfcAdapter.ReaderCallback, IsoDepTransceiver.OnMessageReceived*/ {
 
-    private NfcAdapter nfcAdapter;
-    private IsoDepAdapter isoDepAdapter;
-    private Intent APDUService;
     private HCEActivity activity;
+    private static boolean active = false;
 
     public HCEAdapter (HCEActivity activity) {
         this.activity = activity;
-
-        isoDepAdapter = new IsoDepAdapter(activity.getLayoutInflater());
-        nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
-        APDUService = new Intent(activity, UnitapApduService.class);
-        APDUService.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
     }
+
+    /**
+     * Dorty workaround which I hate.
+     * @return if the apdu service can handle connections
+     */
+    public static boolean isActive(){
+        return active;
+    }
+
     public void sendMessage(String message){
         Intent intent = new Intent("unitap.action.NOTIFY_HCE_DATA");
         intent.putExtra("hcedata", message);
         activity.sendBroadcast(intent);
     }
+
     public void enableReading(){
-        nfcAdapter.enableReaderMode(activity, this, NfcAdapter.FLAG_READER_NFC_A | NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK, null);
-        activity.startService(APDUService);
+        active = true;
+        registerBroadcastReceiver();
     }
     public void disableReader() {
-        activity.stopService(APDUService);
-        nfcAdapter.disableReaderMode(activity);
-    }
-    public void isoDepAddMessage(String message){
-        isoDepAdapter.addMessage(message);
-    }
-    /***********************************************************************************************
-     *                      HCE Tag Handlers
-     ***********************************************************************************************/
-
-    /**
-     * What to do when a tag is discovered
-     * @param tag
-     */
-    @Override
-    public void onTagDiscovered(Tag tag) {
-        IsoDep isoDep = IsoDep.get(tag);
-        IsoDepTransceiver transceiver = new IsoDepTransceiver(isoDep, this);
-        Thread thread = new Thread(transceiver);
-        thread.start();
-    }
-
-    /**
-     *
-     * @param message
-     */
-    @Override
-    public void onMessage(final byte[] message) {
-        activity.runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                isoDepAddMessage(new String(message));
-            }
-        });
-    }
-
-    /**
-     * The HCE implementation has errored at some point
-     * @param exception
-     */
-    @Override
-    public void onError(Exception exception) {
-        //onMessage(exception.getMessage().getBytes());
-        //activity.dialogMessage("HCE Error", exception.getMessage());
+        active = false;
+        deregisterBroadcastReceiver();
     }
 
     /***********************************************************************************************
@@ -99,8 +58,6 @@ public class HCEAdapter implements NfcAdapter.ReaderCallback, IsoDepTransceiver.
         public void onReceive(Context context, Intent intent) {
             String hcedata = intent.getStringExtra("hcedata");
             activity.update(hcedata);
-            //send this data out to the user
-            //notify(hcedata);
         }
     };
 
@@ -112,5 +69,8 @@ public class HCEAdapter implements NfcAdapter.ReaderCallback, IsoDepTransceiver.
         hceNotificationsFilter.addAction("unitap.action.NOTIFY_MAIN_DATA");
         activity.registerReceiver(hceNotificationsReceiver, hceNotificationsFilter);
         Log.v("Registering Receiver", "MAIN Receiver");
+    }
+    private void deregisterBroadcastReceiver(){
+        activity.unregisterReceiver(hceNotificationsReceiver);
     }
 }

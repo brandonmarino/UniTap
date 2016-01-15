@@ -1,6 +1,7 @@
 package com.unitap.unitap.Activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,14 +30,14 @@ public class HCEActivity extends NavigationPane {
         super.onCreate(savedInstanceState);
         setToolbarTitle("HCE Activity");
         hceAdapter = new HCEAdapter(this);
-        //hceAdapter.enableReading(); //haveing this in both the onCreate and onResume could cause issues
+        hceAdapter.enableReading(); //having this in both the onCreate and onResume could cause issues
         outgoingMessage = (EditText) findViewById(R.id.outgoing);
         hceLog = (TextView) findViewById(R.id.incoming);
         hceLog.setText("H.C.E. Message Log:\n");
     }
 
     public void update(String message){
-        hceLog.append("Term:- " + message);
+        hceLog.append("Term:- " + message+"\n");
     }
 
     /**
@@ -44,7 +45,8 @@ public class HCEActivity extends NavigationPane {
      */
     @Override
     public void onResume() {
-        //hceAdapter.enableReading();
+        hceAdapter.enableReading();
+        Log.v("Enabling reading", "ENABLING");
         super.onResume();
     }
 
@@ -53,7 +55,8 @@ public class HCEActivity extends NavigationPane {
      */
     @Override
     public void onPause() {
-        //hceAdapter.disableReader();
+        hceAdapter.disableReader();
+        Log.v("Disabling reading", "DISABLING");
         super.onPause();
     }
 
@@ -70,7 +73,7 @@ public class HCEActivity extends NavigationPane {
         //user has chosen to send a message to another device
         String out = outgoingMessage.getText().toString();
         if (!out.equals("")) {
-            hceLog.append("Andr:- " + out);
+            hceLog.append("Andr:- " + out + "\n");
             hceAdapter.sendMessage(out);
         } else
             dialogMessage("It's Empty", "You can't send an empty message!");

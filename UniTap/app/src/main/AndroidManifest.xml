@@ -2,15 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.unitap.unitap"
     android:versionCode="1"
-    android:versionName="1.0">
+    android:versionName="1.0" >
 
 
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <uses-feature
         android:name="android.hardware.nfc.hce"
-        android:required="true"
-        />
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -18,11 +18,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme.NoActionBar" >
-
         <activity
             android:name=".Activities.WalletActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,12 +29,35 @@
             </intent-filter>
         </activity>
 
+<<<<<<< HEAD
         <!--NFC HCE-->
 
+=======
+        <!-- NFC Testers -->
+        <activity
+            android:name=".Activities.testingNDEFActivity"
+            android:label="Testing NDEF"
+            android:launchMode="singleTask" >
+        </activity>
+>>>>>>> origin/master
         <activity
             android:name=".Activities.HCEActivity"
             android:label="Testing HCE"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask" >
+        </activity>
+        <activity
+            android:name=".Activities.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".Activities.CardActivity"
+            android:label="@string/title_activity_card"
+            android:parentActivityName=".Activities.WalletActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.unitap.unitap.Activities.WalletActivity" />
         </activity>
 
         <service

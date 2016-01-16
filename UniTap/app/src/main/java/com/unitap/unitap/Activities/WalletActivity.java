@@ -137,11 +137,7 @@ public class WalletActivity extends NavigationPane {
     @Override
     public void onResume(){
         super.onResume();
-<<<<<<< HEAD
-=======
         //restoreWallet();
-
->>>>>>> origin/master
     }
 
     private void addCard(final Tag tag){

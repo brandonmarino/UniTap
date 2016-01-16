@@ -29,17 +29,7 @@
             </intent-filter>
         </activity>
 
-<<<<<<< HEAD
-        <!--NFC HCE-->
-
-=======
         <!-- NFC Testers -->
-        <activity
-            android:name=".Activities.testingNDEFActivity"
-            android:label="Testing NDEF"
-            android:launchMode="singleTask" >
-        </activity>
->>>>>>> origin/master
         <activity
             android:name=".Activities.HCEActivity"
             android:label="Testing HCE"

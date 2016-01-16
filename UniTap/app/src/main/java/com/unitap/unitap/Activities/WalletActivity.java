@@ -1,14 +1,21 @@
 package com.unitap.unitap.Activities;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.unitap.unitap.Activities.Abstracted.NavigationPane;
 import com.unitap.unitap.DataControl.ExtensibleMarkupLanguage;
@@ -28,6 +35,7 @@ import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
+import it.gmariotti.cardslib.library.view.listener.dismiss.DefaultDismissableManager;
 import me.drakeet.materialdialog.MaterialDialog;
 
 public class WalletActivity extends NavigationPane {
@@ -41,9 +49,23 @@ public class WalletActivity extends NavigationPane {
     private CardArrayAdapter mCardArrayAdapter;
     private MaterialDialog mMaterialDialog;
     private String nameOfNewCard;
+    String themeChoice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        int themeId = 3;
+        String choice = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("themeType", "3");
+        if(choice.equals("1")){
+            themeId = R.style.AppTheme_Light;
+        }
+        if(choice.equals("2")){
+            themeId = R.style.AppTheme_Dark;
+        }
+        if(choice.equals("3")){
+            themeId = R.style.AppTheme_NoActionBar;
+        }
+        setTheme(themeId);
         setNewContentView(R.layout.activity_wallet);
         super.onCreate(savedInstanceState);
 
@@ -94,7 +116,9 @@ public class WalletActivity extends NavigationPane {
         if (listView!=null){
             listView.setAdapter(mCardArrayAdapter);
         }
+
     }
+
 
     /**
      * What to do whenever the app is paused/exited for any reason
@@ -113,11 +137,16 @@ public class WalletActivity extends NavigationPane {
     @Override
     public void onResume(){
         super.onResume();
+<<<<<<< HEAD
+=======
+        //restoreWallet();
+
+>>>>>>> origin/master
     }
 
-    private void addCard(Tag tag){
+    private void addCard(final Tag tag){
         //logo on card
-        int image = R.drawable.tagstand_logo_icon;
+        final int image = R.drawable.tagstand_logo_icon;
         Card newCard = new Card(this, R.layout.content_wallet);
 
         //Make card header
@@ -129,6 +158,73 @@ public class WalletActivity extends NavigationPane {
         CardThumbnail thumbNail = new CardThumbnail(this);
         thumbNail.setDrawableResource(image);
         newCard.addCardThumbnail(thumbNail);
+
+        //Make card clickable
+        newCard.setOnClickListener(new Card.OnCardClickListener() {
+            @Override
+            public void onClick(Card card, View view) {
+                Intent intent = new Intent(wActivity, CardActivity.class);
+                intent.putExtra("cardName", tag.getName());
+                intent.putExtra("cardImage", image);
+                startActivity(intent);
+            }
+        });
+
+        //When a card is pressed on for a longer time, a dialog will pop up indicating
+        //if user wants to delete or edit card
+        newCard.setOnLongClickListener(new Card.OnLongCardClickListener() {
+            @Override
+            public boolean onLongClick(final Card card, View view) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(wActivity);
+                dialog.setItems(R.array.card_options, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which == 0){
+                            final EditText cardName = new EditText(wActivity);
+                            mMaterialDialog = new MaterialDialog(wActivity)
+                                    .setTitle("Edit Card")
+                                    .setContentView(cardName)
+                                    .setPositiveButton("OK", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            nameOfNewCard = cardName.getText().toString();
+                                            tag.setName(nameOfNewCard);
+                                            card.getCardHeader().setTitle(nameOfNewCard);
+                                            saveWallet();
+                                            card.notifyDataSetChanged();
+                                            mMaterialDialog.dismiss();
+                                        }
+                                    })
+                                    .setNegativeButton("CANCEL", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            nameOfNewCard = "";
+                                            mMaterialDialog.dismiss();
+                                        }
+                                    });
+                            mMaterialDialog.show();
+                        }
+                        if(which == 1){
+                            new AlertDialog.Builder(wActivity)
+                                    .setTitle("Title")
+                                    .setMessage("Do you really want to remove this card?")
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            cardList.remove(card);
+                                            wallet.removeTag(tag);
+                                            saveWallet();
+                                            mCardArrayAdapter.remove(card);
+                                            mCardArrayAdapter.notifyDataSetChanged();
+                                        }})
+                                    .setNegativeButton(android.R.string.no, null).show();
+                        }
+                    }
+                });
+                dialog.show();
+                return true;
+            }
+        });
 
         //add items to respective places
         cardList.add(newCard);
@@ -169,6 +265,12 @@ public class WalletActivity extends NavigationPane {
             return false;
         }
         return true;
+    }
+
+    private void showUserSettings() {
+        SharedPreferences sharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        themeChoice = sharedPrefs.getString("themeType", "3");
     }
 
     private String getKey(){

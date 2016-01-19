@@ -3,6 +3,7 @@
 
     <item
 <<<<<<< HEAD
+<<<<<<< HEAD
         jar="C:\Users\Brandon Marino\Desktop\UniTap\UniTap\commons-codec-1.10\commons-codec-1.10.jar"
 =======
 <<<<<<< HEAD
@@ -140,6 +141,8 @@
         <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\support-annotations-23.0.1-a5693e8438785fd60df970ba58289ef6ccc9ae10.jar" />
     </item>
     <item
+=======
+>>>>>>> cardAesthetic
         jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.1\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
@@ -147,11 +150,11 @@
         <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-a1d95049c850d38e99d522f885bc0eca2f66b238.jar" />
     </item>
     <item
-        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\classes.jar"
+        jar="C:\Users\Danny\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.0.1\support-annotations-23.0.1.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
-        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-3bc52b7e41216eac45792b73afc025f299770a7a.jar" />
+        sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\support-annotations-23.0.1-a5693e8438785fd60df970ba58289ef6ccc9ae10.jar" />
     </item>
     <item
         jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\libs\internal_impl-23.0.1.jar"
@@ -161,25 +164,11 @@
         <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\internal_impl-23.0.1-7f4d74d2116bc76890eda4982e820bcda2a539ab.jar" />
     </item>
     <item
-        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\me.drakeet.materialdialog\library\1.2.2\jars\classes.jar"
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="8646b1e69dd5d923d8866dc4311859f0fbca456c">
-        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-f81504a9f088922fd0d7db4bea5ed3ade7882609.jar" />
-    </item>
-    <item
-        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.github.gabrielemariotti.cards\cardslib-core\2.1.0\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="8190861e323934dad89d5e6b830ea66878c11970">
-        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-70492358aa80be8763c010d382dd7a32d11e26b3.jar" />
-    </item>
-    <item
-        jar="C:\Users\Danny\Documents\UniTap\UniTap\commons-codec-1.10\commons-codec-1.10.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="fdeb1413a218f85fadde79207edac8a724b2a192">
-        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\commons-codec-1.10-4239f56844681dd18b72adf4abc038f289dd4a1f.jar" />
+        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-3bc52b7e41216eac45792b73afc025f299770a7a.jar" />
     </item>
     <item
         jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\design\23.0.1\jars\classes.jar"
@@ -188,6 +177,7 @@
         sha1="e5c61a3169221a89654ffcaaed47bba51cf071ad">
         <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-3c696ee8b5c7ce1d7f7e79d35924b8e118487d31.jar" />
     </item>
+<<<<<<< HEAD
     <item
         jar="C:\Users\Danny\Documents\UniTap\UniTap\simple-xml-2.7.1\simple-xml-2.7.1.jar"
         jumboMode="false"
@@ -204,5 +194,7 @@
 >>>>>>> origin/master
 >>>>>>> bf1b7c932c1a66b148c64695af1018fe4c72d886
     </item>
+=======
+>>>>>>> cardAesthetic
 
 </items>

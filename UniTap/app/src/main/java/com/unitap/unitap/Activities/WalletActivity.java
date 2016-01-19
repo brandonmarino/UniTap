@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
@@ -29,6 +30,8 @@ import com.unitap.unitap.Wallet.Wallet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
@@ -50,22 +53,14 @@ public class WalletActivity extends NavigationPane {
     private MaterialDialog mMaterialDialog;
     private String nameOfNewCard;
     String themeChoice;
+    SharedPreferences prefs;
+    PreferenceChangeListener prefListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        int themeId = 3;
         String choice = PreferenceManager.getDefaultSharedPreferences(this)
                 .getString("themeType", "3");
-        if(choice.equals("1")){
-            themeId = R.style.AppTheme_Light;
-        }
-        if(choice.equals("2")){
-            themeId = R.style.AppTheme_Dark;
-        }
-        if(choice.equals("3")){
-            themeId = R.style.AppTheme_NoActionBar;
-        }
-        setTheme(themeId);
+        chooseTheme(choice);
         setNewContentView(R.layout.activity_wallet);
         super.onCreate(savedInstanceState);
 
@@ -117,6 +112,10 @@ public class WalletActivity extends NavigationPane {
             listView.setAdapter(mCardArrayAdapter);
         }
 
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefListener = new PreferenceChangeListener();
+        prefs.registerOnSharedPreferenceChangeListener(prefListener);
+
     }
 
 
@@ -138,6 +137,11 @@ public class WalletActivity extends NavigationPane {
     public void onResume(){
         super.onResume();
         //restoreWallet();
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> cardAesthetic
     }
 
     private void addCard(final Tag tag){
@@ -279,7 +283,32 @@ public class WalletActivity extends NavigationPane {
         androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() <<32) | tmSerial.hashCode()); //get UUID from this information (posthashing)
         String key = deviceUuid.toString();
-        key = key.replace("-","");  //get rid of padding '-' characters
+        key = key.replace("-", "");  //get rid of padding '-' characters
         return key;
+    }
+
+    public void chooseTheme(String choice){
+        int themeId = 0;
+        if(choice.equals("1")){
+            themeId = R.style.AppTheme_Light;
+        }
+        if(choice.equals("2")){
+            themeId = R.style.AppTheme_Dark;
+        }
+        if(choice.equals("3")){
+            themeId = R.style.AppTheme_NoActionBar;
+        }
+        setTheme(themeId);
+
+    }
+
+    private class PreferenceChangeListener implements
+            SharedPreferences.OnSharedPreferenceChangeListener {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences prefs, String key){
+            String choice = prefs.getString(key, "themeType");
+            chooseTheme(choice);
+            recreate(); //Causing minor hiccup in displaying navigation view on return from settings
+        }
     }
 }

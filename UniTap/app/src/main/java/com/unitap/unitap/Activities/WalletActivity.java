@@ -58,19 +58,9 @@ public class WalletActivity extends NavigationPane {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        int themeId = 3;
         String choice = PreferenceManager.getDefaultSharedPreferences(this)
                 .getString("themeType", "3");
-        if(choice.equals("1")){
-            themeId = R.style.AppTheme_Light;
-        }
-        if(choice.equals("2")){
-            themeId = R.style.AppTheme_Dark;
-        }
-        if(choice.equals("3")){
-            themeId = R.style.AppTheme_NoActionBar;
-        }
-        setTheme(themeId);
+        chooseTheme(choice);
         setNewContentView(R.layout.activity_wallet);
         super.onCreate(savedInstanceState);
 
@@ -308,7 +298,6 @@ public class WalletActivity extends NavigationPane {
             themeId = R.style.AppTheme_NoActionBar;
         }
         setTheme(themeId);
-        setContentView(R.layout.activity_wallet);
 
     }
 
@@ -318,7 +307,7 @@ public class WalletActivity extends NavigationPane {
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key){
             String choice = prefs.getString(key, "themeType");
             chooseTheme(choice);
-            recreate();
+            recreate(); //Causing minor hiccup in displaying navigation view on return from settings
         }
     }
 }

@@ -18,6 +18,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.parse.ParseException;
+import com.parse.SaveCallback;
+import com.parse.SignUpCallback;
 import com.unitap.unitap.Activities.Abstracted.NavigationPane;
 import com.unitap.unitap.DataControl.ExtensibleMarkupLanguage;
 import com.unitap.unitap.DataControl.FileIO;
@@ -26,6 +29,9 @@ import com.unitap.unitap.Exceptions.ProjectExceptions;
 import com.unitap.unitap.R;
 import com.unitap.unitap.Wallet.Tag;
 import com.unitap.unitap.Wallet.Wallet;
+
+import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -137,11 +143,6 @@ public class WalletActivity extends NavigationPane {
     public void onResume(){
         super.onResume();
         //restoreWallet();
-<<<<<<< HEAD
-=======
-
-
->>>>>>> cardAesthetic
     }
 
     private void addCard(final Tag tag){

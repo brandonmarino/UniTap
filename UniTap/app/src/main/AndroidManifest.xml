@@ -3,25 +3,31 @@
     package="com.unitap.unitap"
     android:versionCode="1"
     android:versionName="1.0" >
-
-
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-feature
         android:name="android.hardware.nfc.hce"
         android:required="true" />
+    <meta-data
+        android:name="com.parse.APPLICATION_ID"
+        android:value="r05g6kTnuuIxBdl6J5g1skAcGEuNqsEBsvCC8GC2" />
+    <meta-data
+        android:name="com.parse.CLIENT_KEY"
+        android:value="XKvIT81OpBTnTRrP2Uf42C08NVMEP20ez5U6y6Se" />
 
     <application
+        android:name=".UniTapApplication"
         android:allowBackup="true"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme.NoActionBar" >
         <activity
-            android:name=".Activities.WalletActivity"
+            android:name=".Activities.LoginActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,6 +36,11 @@
         </activity>
 
         <!-- NFC Testers -->
+        <activity
+            android:name=".Activities.WalletActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
             android:name=".Activities.HCEActivity"
             android:label="Testing HCE"

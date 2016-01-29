@@ -137,11 +137,6 @@ public class WalletActivity extends NavigationPane {
     public void onResume(){
         super.onResume();
         //restoreWallet();
-<<<<<<< HEAD
-=======
-
-
->>>>>>> cardAesthetic
     }
 
     private void addCard(final Tag tag){

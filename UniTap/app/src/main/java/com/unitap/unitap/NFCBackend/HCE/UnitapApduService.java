@@ -14,7 +14,7 @@ public class UnitapApduService extends HostApduService {
      *                      App State Functions (Create, Pause, Resume)
      ***********************************************************************************************/
 
-    private String lastMessage = "";
+    private String lastMessage = "Button Not Pressed!------------";
     //private boolean enabled = false;
 
     /**
@@ -76,17 +76,18 @@ public class UnitapApduService extends HostApduService {
                     //else return ERR#Hello
                 } else if (ackApdu(apdu)) {
                     //nothing else needed in the exchange
-                    return null;
+                    return "Hello".getBytes(); //send new message from here or stall
                 } else if (errorApdu(apdu)) {
                     //retry HCE send
-                    return lastMessage.getBytes();
+                    return "ACK#ERROR".getBytes();
                 } else if (requestApdu(apdu)) {
                     //send message out
                     sendToBroadcastReceiver(response);
                     return "ACK#Received".getBytes();
                 }
+                Log.v("SENDING TO ARDUINO", lastMessage);
+                return lastMessage.getBytes();//"ERR#Received".getBytes();
             }
-            return "ERR#Received".getBytes();
         }
         return "u".getBytes();
     }
@@ -100,7 +101,7 @@ public class UnitapApduService extends HostApduService {
             lastMessage = message;
             //generate CRC and append to message with # separator
             //encrypt message
-            sendResponseApdu(message.getBytes());
+        //    sendResponseApdu(message.getBytes());
         }
     }
 
@@ -152,7 +153,8 @@ public class UnitapApduService extends HostApduService {
         public void onReceive(Context context, Intent intent) {
 
             String hcedata = intent.getStringExtra("hcedata");
-            sendToTerminal(hcedata);
+            //sendToTerminal(hcedata);
+            lastMessage = hcedata;
             Log.v("Send-Term", hcedata);
         }
     };

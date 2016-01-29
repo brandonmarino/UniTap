@@ -15,7 +15,7 @@ public class UnitapApduService extends HostApduService {
      ***********************************************************************************************/
 
     private String lastMessage = "";
-    private boolean enabled = false;
+    //private boolean enabled = false;
 
     /**
      * What happens when the service is first run using startService()
@@ -36,8 +36,8 @@ public class UnitapApduService extends HostApduService {
     public void onDestroy(){
         //Log.v("Deregister Receiver", "HCE Receiver + State-Change Receiver");
         unregisterReceiver(hceNotificationsReceiver);   //remove the broadcast reciever
-        unregisterReceiver(stateChangeService);     //remove the state-change receiver
-        enabled = false;
+        //unregisterReceiver(stateChangeService);     //remove the state-change receiver
+        //enabled = false;
         super.onDestroy();
     }
 
@@ -96,7 +96,7 @@ public class UnitapApduService extends HostApduService {
      * @param message
      */
     private void sendToTerminal(String message){
-        if (enabled) {
+        if (HCEAdapter.isActive()) {
             lastMessage = message;
             //generate CRC and append to message with # separator
             //encrypt message
@@ -156,7 +156,7 @@ public class UnitapApduService extends HostApduService {
             Log.v("Send-Term", hcedata);
         }
     };
-
+/*
     final BroadcastReceiver stateChangeService =  new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -177,7 +177,7 @@ public class UnitapApduService extends HostApduService {
             }
         }
     };
-
+*/
     /**
      * Register a broadcast receiver for this Service
      * This is to receive messages from the application using this service
@@ -187,11 +187,12 @@ public class UnitapApduService extends HostApduService {
         hceNotificationsFilter.addAction("unitap.action.NOTIFY_HCE_DATA");
         registerReceiver(hceNotificationsReceiver, hceNotificationsFilter);
         Log.v("Registering Receiver", "HCE Receiver");
-
+/*
         final IntentFilter stateChangeNotificationsFilter = new IntentFilter();
         stateChangeNotificationsFilter.addAction("unitap.action.READER_STATE_CHANGE");
         registerReceiver(stateChangeService, stateChangeNotificationsFilter);
         Log.v("Registering Receiver", "State Changer");
+*/
     }
 
     /**

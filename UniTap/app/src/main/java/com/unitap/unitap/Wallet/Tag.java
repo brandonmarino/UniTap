@@ -16,6 +16,7 @@ public class Tag{
     //private Image picture = getDrawableResource(image);
     private Date addedDate;
     private String payload;
+    private String tagID;
 
     public Tag() {
         this.name = "Generic";
@@ -96,6 +97,14 @@ public class Tag{
      */
     public void setAddedDate(Date addedDate) {
         this.addedDate = addedDate;
+    }
+
+    public String getTagID() {
+        return tagID;
+    }
+
+    public void setTagID(String tagID) {
+        this.tagID = tagID;
     }
 
     /************************************************************

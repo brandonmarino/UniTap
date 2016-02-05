@@ -14,11 +14,16 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 import com.unitap.unitap.Activities.Abstracted.NavigationPane;
@@ -35,6 +40,7 @@ import com.parse.ParseUser;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
@@ -50,6 +56,7 @@ import me.drakeet.materialdialog.MaterialDialog;
 public class WalletActivity extends NavigationPane {
 
     protected static final int REQUEST_CODE = 100;
+    final int image = R.drawable.tagstand_logo_icon;
     private Wallet wallet = new Wallet("Some Guy");;  //model
     private ArrayList<Card> cardList = new ArrayList<>();   //view
     private File walletCache;   //file store encrypted xml equivalent of the user's wallet
@@ -61,6 +68,7 @@ public class WalletActivity extends NavigationPane {
     String themeChoice;
     SharedPreferences prefs;
     PreferenceChangeListener prefListener;
+    private Activity walletActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +77,7 @@ public class WalletActivity extends NavigationPane {
         chooseTheme(choice);
         setNewContentView(R.layout.activity_wallet);
         super.onCreate(savedInstanceState);
+        walletActivity = this;
 
         //Title in Actionbar
         setToolbarTitle("wallet");
@@ -92,7 +101,7 @@ public class WalletActivity extends NavigationPane {
                             public void onClick(View v) {
                                 nameOfNewCard = cardName.getText().toString();
                                 Tag tag = new Tag(nameOfNewCard, "payload");
-                                addCard(tag);
+                                addCard(tag, false);
                                 saveWallet();
                                 mMaterialDialog.dismiss();
                             }
@@ -145,9 +154,8 @@ public class WalletActivity extends NavigationPane {
         //restoreWallet();
     }
 
-    private void addCard(final Tag tag){
+    private void addCard(final Tag tag, boolean isFromServer){
         //logo on card
-        final int image = R.drawable.tagstand_logo_icon;
         Card newCard = new Card(this, R.layout.content_wallet);
 
         //Make card header
@@ -192,6 +200,7 @@ public class WalletActivity extends NavigationPane {
                                             card.getCardHeader().setTitle(nameOfNewCard);
                                             saveWallet();
                                             card.notifyDataSetChanged();
+                                            updateCardInfo(tag);
                                             mMaterialDialog.dismiss();
                                         }
                                     })
@@ -216,6 +225,7 @@ public class WalletActivity extends NavigationPane {
                                             wallet.removeTag(tag);
                                             saveWallet();
                                             mCardArrayAdapter.remove(card);
+                                            removeCardFromCloud(tag);
                                             mCardArrayAdapter.notifyDataSetChanged();
                                         }})
                                     .setNegativeButton(android.R.string.no, null).show();
@@ -230,6 +240,9 @@ public class WalletActivity extends NavigationPane {
         //add items to respective places
         cardList.add(newCard);
         wallet.addTag(tag);
+        if(isFromServer == false) {
+            saveCardToCloud(tag);
+        }
     }
 
     private boolean saveWallet(){
@@ -245,8 +258,9 @@ public class WalletActivity extends NavigationPane {
         }
     }
 
-    private boolean restoreWallet(){
+    private void restoreWallet(){
         //get Stored Wallet
+        /*
         try {
             String encryptedXml = "" + FileIO.readFromFile(walletCache);
             if (!encryptedXml.equals("")) {
@@ -266,6 +280,8 @@ public class WalletActivity extends NavigationPane {
             return false;
         }
         return true;
+        */
+        retrieveCardsFromCloud();
     }
 
     private void showUserSettings() {
@@ -312,4 +328,71 @@ public class WalletActivity extends NavigationPane {
             recreate(); //Causing minor hiccup in displaying navigation view on return from settings
         }
     }
+
+    private void saveCardToCloud(Tag tag){
+        ParseObject card = new ParseObject("Card");
+        card.put("cardName", tag.getName());
+        card.put("owner", ParseUser.getCurrentUser());
+        card.saveInBackground();
+    }
+
+    private void retrieveCardsFromCloud(){
+        ParseQuery cardQuery = new ParseQuery("Card");
+        cardQuery.whereEqualTo("owner", ParseUser.getCurrentUser());
+        cardQuery.orderByDescending("createdAt");
+        cardQuery.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> cardsParseList, ParseException e) {
+                if (e == null) {
+                    wallet.removeAllTags();
+                    cardList.clear();
+                    for (int i = 0; i < cardsParseList.size(); i++) {
+                        Card card = new Card(walletActivity, R.layout.content_wallet);
+                        final Tag tag = new Tag();
+                        tag.setName(cardsParseList.get(i).getString("cardName"));
+                        tag.setTagID(cardsParseList.get(i).getObjectId());
+                        //Make card header
+                        addCard(tag, true);
+                    }
+                    mCardArrayAdapter.notifyDataSetChanged();
+
+                } else {
+                    Log.d("score", "Error: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    public void removeCardFromCloud(Tag tag){
+        ParseQuery removeQuery = new ParseQuery("Card");
+        removeQuery.getInBackground(tag.getTagID(), new GetCallback<ParseObject>() {
+            public void done(ParseObject cardToDelete, ParseException e) {
+                if (e == null) {
+                    cardToDelete.deleteInBackground();
+                }
+            }
+        });
+    }
+
+    public void updateCardInfo(final Tag tag){
+        ParseQuery editQuery = new ParseQuery("Card");
+        editQuery.getInBackground(tag.getTagID(), new GetCallback<ParseObject>() {
+            public void done(ParseObject cardToEdit, ParseException e) {
+                if (e == null) {
+                    cardToEdit.put("cardName", tag.getName());
+                    cardToEdit.saveInBackground();
+                }
+            }
+        });
+    }
+
+    //Future method to store different icons to database, for now just using universal icon
+    /*
+    private void drawableToImage(){
+        Drawable d; // the drawable (Captain Obvious, to the rescue!!!)
+        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] bitmapdata = stream.toByteArray();
+    }
+    */
 }

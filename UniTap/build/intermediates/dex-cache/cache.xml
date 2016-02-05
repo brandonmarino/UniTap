@@ -2,11 +2,25 @@
 <items version="2" >
 
     <item
+        jar="C:\Users\Danny\.gradle\caches\modules-2\files-2.1\com.parse.bolts\bolts-tasks\1.4.0\d85884acf6810a3bbbecb587f239005cbc846dc4\bolts-tasks-1.4.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="d85884acf6810a3bbbecb587f239005cbc846dc4">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\bolts-tasks-1.4.0-cbfaf53c5c82a080e830bae4db1ceb59d3e9eade.jar" />
+    </item>
+    <item
         jar="C:\Users\Danny\.gradle\caches\modules-2\files-2.1\com.parse.bolts\bolts-applinks\1.4.0\8ad21bf21784dacce5f2043afb97218cc377e835\bolts-applinks-1.4.0.jar"
         jumboMode="false"
         revision="23.0.1"
         sha1="8ad21bf21784dacce5f2043afb97218cc377e835">
         <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\bolts-applinks-1.4.0-5cc8861a0a6694aff7c4be55cb411658f73ac3c3.jar" />
+    </item>
+    <item
+        jar="C:\Users\Danny\.gradle\caches\modules-2\files-2.1\com.parse\parse-android\1.13.0\58a7d54b6a4f28be11f0cecec93097eddf473e6f\parse-android-1.13.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="58a7d54b6a4f28be11f0cecec93097eddf473e6f">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\parse-android-1.13.0-430225353a669c2b85e23df03733268892006d34.jar" />
     </item>
 
 </items>

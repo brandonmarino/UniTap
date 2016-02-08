@@ -1,4 +1,4 @@
-package com.unitap.unitap.Encryption;
+package com.unitap.unitap.DataControl;
 import com.unitap.unitap.Exceptions.InheritedExceptions.EncryptionException;
 
 import javax.crypto.Cipher;

@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
 import android.util.Log;
-import com.unitap.unitap.CyclicRedundancyCheck.CRC16;
 
 public class UnitapApduService extends HostApduService {
 

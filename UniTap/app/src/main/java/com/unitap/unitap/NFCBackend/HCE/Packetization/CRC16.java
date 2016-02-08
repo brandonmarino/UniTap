@@ -1,4 +1,4 @@
-package com.unitap.unitap.CyclicRedundancyCheck;
+package com.unitap.unitap.NFCBackend.HCE.Packetization;
 
 /**
  * Created by Brandon Marino on 2015-11-26.
@@ -25,18 +25,24 @@ public class CRC16 {
      * @param input
      * @return
      */
-    public static boolean verify(byte[] input){
-        String originalMessage = new String(input);
+    protected static boolean verify(byte[] input){
         //now cut it down to remove the crc
-        byte[] crcBytesOld = originalMessage.substring(0,2).getBytes();
+        byte[] crcBytesOld = {input[0], input[1]};
         //now combine into an integer for easy comparison.
         int crcIntegerOld = combineBytes(crcBytesOld);
         //now cut the actual message out of the input and generate CRC from that message
-        int crcIntegerNew = generate_crc(originalMessage.substring(2).getBytes());
+        byte[] originalMessage = new byte[input.length-2];
+        System.arraycopy(input, 2, originalMessage, 0, input.length-2);
+        int crcIntegerNew = generate_crc(originalMessage);
         return crcIntegerOld == crcIntegerNew;
     }
 
-    public static int combineBytes(byte [] bytes){
+    /**
+     * Combine two bytes into one integer
+     * @param bytes
+     * @return
+     */
+    protected static int combineBytes(byte [] bytes){
         if (bytes.length <= 8){
             return bytes[1]<<8 &0xFF00 | bytes[0]&0xFF;
         }
@@ -49,7 +55,7 @@ public class CRC16 {
      * @param input
      * @return
      */
-    public static byte[] appendCRCBytes(byte[] input){
+    protected static byte[] appendCRCBytes(byte[] input){
         int crcInt = generate_crc(input); // check
 
         //mask out the two important bytes
@@ -67,12 +73,24 @@ public class CRC16 {
     }
 
     /**
+     * Take a message that has a CRC attached to its head and extract out the message behind it
+     * @param appendedMessage
+     * @return
+     */
+    protected static String stripOutCRCHeader(byte[] appendedMessage){
+
+        byte [] receivedMessage = new byte[appendedMessage.length-2];
+        System.arraycopy(appendedMessage, 2, receivedMessage, 0, appendedMessage.length-2);
+        return new String(receivedMessage);
+    }
+
+    /**
      * This will take one message (in byte array 1), and append a CRC generated from another (int byte array 2)
      * @param arrayToAppend the byte array to add the CRC to
      * @param arrayToCRC the byte array to generate the CRC from
      * @return the appended array
      */
-    public static byte[] appendCRCOnDifferentArray(byte[] arrayToAppend, byte[] arrayToCRC){
+    protected static byte[] appendCRCOnDifferentArray(byte[] arrayToAppend, byte[] arrayToCRC){
         int crcInt = generate_crc(arrayToCRC); // check
 
         //mask out the two important bytes
@@ -87,17 +105,5 @@ public class CRC16 {
 
         //return the concatenated message
         return output;
-    }
-
-    /**
-     * Take a message that has a CRC attached to its head and extract out the message behind it
-     * @param appendedMessage
-     * @return
-     */
-    public static String stripOutCRCHeader(byte[] appendedMessage){
-
-        byte [] receivedMessage = new byte[appendedMessage.length-2];
-        System.arraycopy(appendedMessage, 2, receivedMessage, 0, appendedMessage.length-2);
-        return new String(receivedMessage);
     }
 }

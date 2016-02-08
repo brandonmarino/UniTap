@@ -1,27 +1,23 @@
 package com.unitap.unitap.Activities;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.unitap.unitap.Activities.Abstracted.NavigationPane;
 import com.unitap.unitap.DataControl.ExtensibleMarkupLanguage;
 import com.unitap.unitap.DataControl.FileIO;
-import com.unitap.unitap.Encryption.AdvancedEncryptionStandard;
+import com.unitap.unitap.DataControl.AdvancedEncryptionStandard;
 import com.unitap.unitap.Exceptions.ProjectExceptions;
 import com.unitap.unitap.R;
 import com.unitap.unitap.Wallet.Tag;
@@ -30,15 +26,12 @@ import com.unitap.unitap.Wallet.Wallet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
 
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
-import it.gmariotti.cardslib.library.view.listener.dismiss.DefaultDismissableManager;
 import me.drakeet.materialdialog.MaterialDialog;
 
 public class WalletActivity extends NavigationPane {

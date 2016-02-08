@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
 import android.util.Log;
+import com.unitap.unitap.CyclicRedundancyCheck.CRC16;
 
 public class UnitapApduService extends HostApduService {
 
@@ -15,7 +16,7 @@ public class UnitapApduService extends HostApduService {
      ***********************************************************************************************/
 
     private String lastMessage = "Button Not Pressed!------------";
-    //private boolean enabled = false;
+    private byte count = 0;  //byte so that it uses less of the limited packet room
 
     /**
      * What happens when the service is first run using startService()
@@ -158,28 +159,7 @@ public class UnitapApduService extends HostApduService {
             Log.v("Send-Term", hcedata);
         }
     };
-/*
-    final BroadcastReceiver stateChangeService =  new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.v("ENTERED RECEIVER", "Hello");
-            String out = intent.getStringExtra("stateChange");
-            if (out == null)
-                return;
-            else
-                Log.v("Message", out);
 
-            if (out.toLowerCase().equals( "TRUE".toLowerCase())) {
-                Log.v("Reader State Change:", "ENABLED");
-                enabled = true;
-            }
-            else if (out.toLowerCase().equals("FALSE".toLowerCase())) {
-                Log.v("Reader State Change:", "DISABLED");
-                enabled = false;
-            }
-        }
-    };
-*/
     /**
      * Register a broadcast receiver for this Service
      * This is to receive messages from the application using this service

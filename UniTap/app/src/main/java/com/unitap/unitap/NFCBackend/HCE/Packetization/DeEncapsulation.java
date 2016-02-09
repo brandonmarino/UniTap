@@ -19,20 +19,24 @@ public class DeEncapsulation {
         byte[] typeByte = getSubarray(message,2,3);
         return CRC16.combineBytes(typeByte);
     }
---
+//--
     public static Integer getPacketNumber(byte[] message){
-        byte[] numByte = getSubarray(message,2,3);
-        return CRC16.combineBytes(typeByte);
+        byte[] numByte = getSubarray(message,3,4);
+        return 1;
+        //return CRC16.combineBytes(typeByte);
     }
 
     public static byte[] getPhoneIdCrc(byte[] message){
         byte[] pidByte = getSubarray(message,2,3);
         //return CRC16.combineBytes(typeByte);
+        byte[] output = {0x00};
+        return output;
     }
 
     public static Integer getCompanyId(byte[] message){
         byte[] cidByte = getSubarray(message,2,3);
-        return CRC16.combineBytes(typeByte);
+        //return CRC16.combineBytes(typeByte);
+        return 1;
     }
 
     public static byte[] getMessage(byte[] message){

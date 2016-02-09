@@ -1,16 +1,17 @@
 package com.unitap.unitap.NFCBackend.HCE.Packetization;
 
 /**
+ * A Full CRC Generator
  * Created by Brandon Marino on 2015-11-26.
  */
 public class CRC16 {
-    private static int generate_crc(final byte[] buffer) {
+    private static int generateCrc(final byte[] input) {
         /*Format: CRC-CCITT (0xFFFF)*/
         int crc = 0xFFFF;
 
-        for (int j = 0; j < buffer.length ; j++) {
+        for (int j = 0; j < input.length ; j++) {
             crc = ((crc  >>> 8) | (crc  << 8) )& 0xffff;
-            crc ^= (buffer[j] & 0xff);//byte to int, trunc sign
+            crc ^= (input[j] & 0xff);//byte to int, trunc sign
             crc ^= ((crc & 0xff) >> 4);
             crc ^= (crc << 12) & 0xffff;
             crc ^= ((crc & 0xFF) << 5) & 0xffff;
@@ -33,7 +34,7 @@ public class CRC16 {
         //now cut the actual message out of the input and generate CRC from that message
         byte[] originalMessage = new byte[input.length-2];
         System.arraycopy(input, 2, originalMessage, 0, input.length-2);
-        int crcIntegerNew = generate_crc(originalMessage);
+        int crcIntegerNew = generateCrc(originalMessage);
         return crcIntegerOld == crcIntegerNew;
     }
 
@@ -46,7 +47,6 @@ public class CRC16 {
         if (bytes.length <= 8){
             return bytes[1]<<8 &0xFF00 | bytes[0]&0xFF;
         }
-
         return -1;
     }
 
@@ -56,7 +56,7 @@ public class CRC16 {
      * @return
      */
     protected static byte[] appendCRCBytes(byte[] input){
-        int crcInt = generate_crc(input); // check
+        int crcInt = generateCrc(input); // check
 
         //mask out the two important bytes
         byte[] crcBytes = new byte[2];
@@ -91,7 +91,7 @@ public class CRC16 {
      * @return the appended array
      */
     protected static byte[] appendCRCOnDifferentArray(byte[] arrayToAppend, byte[] arrayToCRC){
-        int crcInt = generate_crc(arrayToCRC); // check
+        int crcInt = generateCrc(arrayToCRC); // check
 
         //mask out the two important bytes
         byte[] crcBytes = new byte[2];

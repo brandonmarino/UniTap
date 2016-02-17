@@ -1,14 +1,19 @@
 package com.unitap.unitap.Activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
 import android.view.View;
@@ -45,9 +50,10 @@ public class WalletActivity extends NavigationPane {
     private CardArrayAdapter mCardArrayAdapter;
     private MaterialDialog mMaterialDialog;
     private String nameOfNewCard;
-    String themeChoice;
-    SharedPreferences prefs;
-    PreferenceChangeListener prefListener;
+    private String themeChoice;
+    private SharedPreferences prefs;
+    private PreferenceChangeListener prefListener;
+    private static final int PERMISSION_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +67,10 @@ public class WalletActivity extends NavigationPane {
         setToolbarTitle("wallet");
 
         //location of the walletCache File
+        checkPermissions();
         walletCache = new File(this.getFilesDir(),"walletCache.ut");//creates a file which only this app can access
-        wActivity = this;
-
         crypt= new AdvancedEncryptionStandard(getKey()); //store key in encryption object
+        wActivity = this;
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -94,8 +100,7 @@ public class WalletActivity extends NavigationPane {
                 mMaterialDialog.show();
             }
         });
-
-        restoreWallet();
+         restoreWallet();
 
         //assign cardList to cardAdapter
         mCardArrayAdapter = new CardArrayAdapter(this, cardList);
@@ -110,7 +115,6 @@ public class WalletActivity extends NavigationPane {
         prefs.registerOnSharedPreferenceChangeListener(prefListener);
 
     }
-
 
     /**
      * What to do whenever the app is paused/exited for any reason
@@ -130,6 +134,87 @@ public class WalletActivity extends NavigationPane {
     public void onResume(){
         super.onResume();
         //restoreWallet();
+    }
+
+
+    /*********************************************************************************
+     *                            Persistence and Encryption
+     *********************************************************************************/
+    private boolean saveWallet(){
+        try {
+            String xml = ExtensibleMarkupLanguage.marshal(wallet);
+            String encryptedXml = crypt.encrypt(xml);
+            FileIO.saveToFile(walletCache, encryptedXml);
+            return true;
+
+        }catch(ProjectExceptions e){
+            dialogMessage("Save Wallet Error", e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean restoreWallet(){
+        //get Stored Wallet
+        try {
+            String encryptedXml = "" + FileIO.readFromFile(walletCache);
+            if (!encryptedXml.equals("")) {
+                String xml = "" + crypt.decrypt(encryptedXml);
+                if (!xml.equals("")) {
+                    Wallet newWallet = ExtensibleMarkupLanguage.unMarshal(xml, (new Wallet()).getClass());
+
+                    //map tags to cards
+                    for(Tag currentTag: newWallet.getWallet()){
+                        addCard(currentTag);
+                    }
+                    wallet = newWallet;
+                }
+            }
+        }catch(ProjectExceptions e){
+            dialogMessage("Restore Wallet Error", e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    private String getKey(){
+        //find device id for copy protection/encryption purposes
+        //gather defining device IDs
+        final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        final String tmDevice, tmSerial, androidId;
+        tmDevice = "" + tm.getDeviceId();
+        tmSerial = "" + tm.getSimSerialNumber();
+        androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() <<32) | tmSerial.hashCode()); //get UUID from this information (posthashing)
+        String key = deviceUuid.toString();
+        key = key.replace("-", "");  //get rid of padding '-' characters
+        return key;
+    }
+
+    /*************************************************************************************************
+     *                          User Interface and customization
+     ************************************************************************************************/
+    public void chooseTheme(String choice){
+        int themeId = 0;
+        if(choice.equals("1")){
+            themeId = R.style.AppTheme_Light;
+        }
+        if(choice.equals("2")){
+            themeId = R.style.AppTheme_Dark;
+        }
+        if(choice.equals("3")){
+            themeId = R.style.AppTheme_NoActionBar;
+        }
+        setTheme(themeId);
+    }
+
+    private class PreferenceChangeListener implements
+            SharedPreferences.OnSharedPreferenceChangeListener {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences prefs, String key){
+            String choice = prefs.getString(key, "themeType");
+            chooseTheme(choice);
+            recreate(); //Causing minor hiccup in displaying navigation view on return from settings
+        }
     }
 
     private void addCard(final Tag tag){
@@ -219,84 +304,71 @@ public class WalletActivity extends NavigationPane {
         wallet.addTag(tag);
     }
 
-    private boolean saveWallet(){
-        try {
-            String xml = ExtensibleMarkupLanguage.marshal(wallet);
-            String encryptedXml = crypt.encrypt(xml);
-            FileIO.saveToFile(walletCache, encryptedXml);
-            return true;
-
-        }catch(ProjectExceptions e){
-            dialogMessage("Save Wallet Error", e.getMessage());
-            return false;
-        }
-    }
-
-    private boolean restoreWallet(){
-        //get Stored Wallet
-        try {
-            String encryptedXml = "" + FileIO.readFromFile(walletCache);
-            if (!encryptedXml.equals("")) {
-                String xml = "" + crypt.decrypt(encryptedXml);
-                if (!xml.equals("")) {
-                    Wallet newWallet = ExtensibleMarkupLanguage.unMarshal(xml, (new Wallet()).getClass());
-
-                    //map tags to cards
-                    for(Tag currentTag: newWallet.getWallet()){
-                        addCard(currentTag);
-                    }
-                    wallet = newWallet;
-                }
-            }
-        }catch(ProjectExceptions e){
-            dialogMessage("Restore Wallet Error", e.getMessage());
-            return false;
-        }
-        return true;
-    }
-
     private void showUserSettings() {
         SharedPreferences sharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(this);
         themeChoice = sharedPrefs.getString("themeType", "3");
     }
 
-    private String getKey(){
-        //find device id for copy protection/encryption purposes
-        //gather defining device IDs
-        final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
-        final String tmDevice, tmSerial, androidId;
-        tmDevice = "" + tm.getDeviceId();
-        tmSerial = "" + tm.getSimSerialNumber();
-        androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() <<32) | tmSerial.hashCode()); //get UUID from this information (posthashing)
-        String key = deviceUuid.toString();
-        key = key.replace("-", "");  //get rid of padding '-' characters
-        return key;
-    }
+    /******************************************************************************************************************
+     *                      Permissions
+     ******************************************************************************************************************/
+    private void checkPermissions(){
 
-    public void chooseTheme(String choice){
-        int themeId = 0;
-        if(choice.equals("1")){
-            themeId = R.style.AppTheme_Light;
+        boolean permissionNFC = (ContextCompat.checkSelfPermission(this, Manifest.permission.NFC) == PackageManager.PERMISSION_GRANTED);
+        boolean permissionReadPhoneState = (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED);
+
+        if (!permissionNFC) {
+            requestPermission(Manifest.permission.NFC,
+                    "UniTap needs access to the NFC capabilities of your device to function properly.\n" +
+                            "It is necessary for the application to operate.\n" +
+                            "On the following screen, please provide UniTap this permission.");
         }
-        if(choice.equals("2")){
-            themeId = R.style.AppTheme_Dark;
-        }
-        if(choice.equals("3")){
-            themeId = R.style.AppTheme_NoActionBar;
-        }
-        setTheme(themeId);
+        if (!permissionReadPhoneState)
+            requestPermission(Manifest.permission.READ_PHONE_STATE,
+                    "UniTap needs access to the state. This information will be used for encryption purposes.\n" +
+                            "It is necessary for the application to operate.\n" +
+                            "On the following screen, please provide UniTap this permission.");
 
     }
+    private boolean requestPermission(String specificPermission, String explanation) {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this, specificPermission) != PackageManager.PERMISSION_GRANTED) {
 
-    private class PreferenceChangeListener implements
-            SharedPreferences.OnSharedPreferenceChangeListener {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences prefs, String key){
-            String choice = prefs.getString(key, "themeType");
-            chooseTheme(choice);
-            recreate(); //Causing minor hiccup in displaying navigation view on return from settings
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, specificPermission)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                dialogMessage("Permission Request", explanation);
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{specificPermission},
+                        PERMISSION_REQUEST_CODE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    dialogMessage("Permission Granted", "The permission was granted. Thank you!");
+                } else {
+                    dialogMessage("Permission Denied", "UniTap cannot function properly without this permission. Please consider enabling it in the future!");
+                }
+                break;
         }
     }
 }

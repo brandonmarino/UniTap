@@ -16,7 +16,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.widget.EditText;
 
 import com.unitap.unitap.Activities.Abstracted.NavigationPane;
@@ -43,7 +45,7 @@ public class WalletActivity extends NavigationPane {
 
     protected static final int REQUEST_CODE = 100;
     private Wallet wallet = new Wallet("Some Guy");;  //model
-    private ArrayList<Card> cardList = new ArrayList<>();   //view
+    private ArrayList<Card> cardList;   //view
     private File walletCache;   //file store encrypted xml equivalent of the user's wallet
     private AdvancedEncryptionStandard crypt;
     private Activity wActivity;
@@ -54,6 +56,8 @@ public class WalletActivity extends NavigationPane {
     private SharedPreferences prefs;
     private PreferenceChangeListener prefListener;
     private static final int PERMISSION_REQUEST_CODE = 1;
+    public static boolean permissionNFC = false;
+    public static boolean permissionReadPhoneState = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +72,6 @@ public class WalletActivity extends NavigationPane {
 
         //location of the walletCache File
         checkPermissions();
-        walletCache = new File(this.getFilesDir(),"walletCache.ut");//creates a file which only this app can access
-        crypt= new AdvancedEncryptionStandard(getKey()); //store key in encryption object
-        wActivity = this;
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -100,22 +101,40 @@ public class WalletActivity extends NavigationPane {
                 mMaterialDialog.show();
             }
         });
-         restoreWallet();
 
-        //assign cardList to cardAdapter
-        mCardArrayAdapter = new CardArrayAdapter(this, cardList);
-
-        CardListView listView = (CardListView) findViewById(R.id.myList);
-        if (listView!=null){
-            listView.setAdapter(mCardArrayAdapter);
-        }
-
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefListener = new PreferenceChangeListener();
-        prefs.registerOnSharedPreferenceChangeListener(prefListener);
 
     }
+    /**
+     * What the app does once the phone enters the app (Does this the first time the app is launched, and then every time after that)
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        checkPermissions();
+        setUpWallet();
+    }
+    private void setUpWallet(){
+        if(permissionNFC && permissionReadPhoneState) {
+            walletCache = new File(this.getFilesDir(), "walletCache.ut");//creates a file which only this app can access
+            crypt = new AdvancedEncryptionStandard(getKey()); //store key in encryption object
+            wActivity = this;
 
+
+            restoreWallet();
+
+            //assign cardList to cardAdapter
+            mCardArrayAdapter = new CardArrayAdapter(this, cardList);
+
+            CardListView listView = (CardListView) findViewById(R.id.myList);
+            if (listView != null) {
+                listView.setAdapter(mCardArrayAdapter);
+            }
+
+            prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            prefListener = new PreferenceChangeListener();
+            prefs.registerOnSharedPreferenceChangeListener(prefListener);
+        }
+    }
     /**
      * What to do whenever the app is paused/exited for any reason
      */
@@ -127,14 +146,7 @@ public class WalletActivity extends NavigationPane {
         //saveWallet();
     }
 
-    /**
-     * What the app does once the phone enters the app (Does this the first time the app is launched, and then every time after that)
-     */
-    @Override
-    public void onResume(){
-        super.onResume();
-        //restoreWallet();
-    }
+
 
 
     /*********************************************************************************
@@ -155,6 +167,7 @@ public class WalletActivity extends NavigationPane {
 
     private boolean restoreWallet(){
         //get Stored Wallet
+        cardList = new ArrayList<>();
         try {
             String encryptedXml = "" + FileIO.readFromFile(walletCache);
             if (!encryptedXml.equals("")) {
@@ -170,10 +183,23 @@ public class WalletActivity extends NavigationPane {
                 }
             }
         }catch(ProjectExceptions e){
-            dialogMessage("Restore Wallet Error", e.getMessage());
+            dialogMessage("New Wallet Created", "Welcome to UniTap!\nA new wallet has been created for you!");
+            e.printStackTrace();
+            reInitializeWallet();
             return false;
         }
         return true;
+    }
+    private void reInitializeWallet(){
+        wallet = new Wallet("some guy");
+        walletCache = new File(this.getFilesDir(), "walletCache.ut");//creates a file which only this app can access
+        if (walletCache.exists())
+            walletCache.delete();
+        try {
+            walletCache.createNewFile();
+        }catch(java.io.IOException e){
+            e.printStackTrace();
+        }
     }
 
     private String getKey(){
@@ -315,8 +341,8 @@ public class WalletActivity extends NavigationPane {
      ******************************************************************************************************************/
     private void checkPermissions(){
 
-        boolean permissionNFC = (ContextCompat.checkSelfPermission(this, Manifest.permission.NFC) == PackageManager.PERMISSION_GRANTED);
-        boolean permissionReadPhoneState = (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED);
+        permissionNFC = (ContextCompat.checkSelfPermission(this, Manifest.permission.NFC) == PackageManager.PERMISSION_GRANTED);
+        permissionReadPhoneState = (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED);
 
         if (!permissionNFC) {
             requestPermission(Manifest.permission.NFC,
@@ -326,7 +352,7 @@ public class WalletActivity extends NavigationPane {
         }
         if (!permissionReadPhoneState)
             requestPermission(Manifest.permission.READ_PHONE_STATE,
-                    "UniTap needs access to the state. This information will be used for encryption purposes.\n" +
+                    "UniTap needs access to the phone's state. This information will be used for encryption purposes.\n" +
                             "It is necessary for the application to operate.\n" +
                             "On the following screen, please provide UniTap this permission.");
 
@@ -342,7 +368,9 @@ public class WalletActivity extends NavigationPane {
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
                 dialogMessage("Permission Request", explanation);
-
+                ActivityCompat.requestPermissions(this,
+                        new String[]{specificPermission},
+                        PERMISSION_REQUEST_CODE);
             } else {
 
                 // No explanation needed, we can request the permission.

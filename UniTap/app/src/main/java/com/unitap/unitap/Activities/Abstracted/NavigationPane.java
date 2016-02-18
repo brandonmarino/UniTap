@@ -27,7 +27,6 @@ public abstract class NavigationPane extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(contentView);
         //initializing a dialog message
-        dialogMessage = new AlertDialog.Builder(this).setNeutralButton("Ok", null).create();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -64,6 +63,7 @@ public abstract class NavigationPane extends AppCompatActivity
      * @param message some message to display
      */
     protected void dialogMessage(String title, String message){
+        dialogMessage = new AlertDialog.Builder(this).setNeutralButton("Ok", null).create();
         dialogMessage.setTitle(title);
         dialogMessage.setMessage(message);
         dialogMessage.show();

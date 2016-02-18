@@ -2,6 +2,55 @@
 <items version="2" >
 
     <item
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-a7d589ef9d62e6fd5ee109b3c06a7c211d83e1d5.jar" />
+    </item>
+    <item
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.facebook.android\facebook-android-sdk\4.10.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="bcb4a50f5e2c67b3e84441b1b2a239856776c9b8">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-705c5e2080422d6868c560eb0e2e52569e298e68.jar" />
+    </item>
+    <item
+        jar="C:\Users\Danny\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.1.1\support-annotations-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\support-annotations-23.1.1-cca37822151b0b21ffdf04a4f17756a41f5da941.jar" />
+    </item>
+    <item
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.parse\parsefacebookutils-v4-android\1.10.3\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="771e1739a38be7573c55458d16ca2d2f9f546cf7">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-b71b8bf160a44ddd48117999d614036dc77e363c.jar" />
+    </item>
+    <item
+        jar="C:\Users\Danny\.gradle\caches\modules-2\files-2.1\com.parse\parse-android\1.13.0\58a7d54b6a4f28be11f0cecec93097eddf473e6f\parse-android-1.13.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="58a7d54b6a4f28be11f0cecec93097eddf473e6f">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\parse-android-1.13.0-430225353a669c2b85e23df03733268892006d34.jar" />
+    </item>
+    <item
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\libs\internal_impl-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\internal_impl-23.1.1-138925592bbf092111d4e7aaac546127935494a1.jar" />
+    </item>
+    <item
+        jar="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\23.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="5e412e954a24c5310a459c09870e4e2081aceb03">
+        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\classes-879f96a656d4bb578af535d9dac3ab72b9373cf7.jar" />
+    </item>
+    <item
         jar="C:\Users\Danny\.gradle\caches\modules-2\files-2.1\com.parse.bolts\bolts-tasks\1.4.0\d85884acf6810a3bbbecb587f239005cbc846dc4\bolts-tasks-1.4.0.jar"
         jumboMode="false"
         revision="23.0.1"
@@ -14,13 +63,6 @@
         revision="23.0.1"
         sha1="8ad21bf21784dacce5f2043afb97218cc377e835">
         <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\bolts-applinks-1.4.0-5cc8861a0a6694aff7c4be55cb411658f73ac3c3.jar" />
-    </item>
-    <item
-        jar="C:\Users\Danny\.gradle\caches\modules-2\files-2.1\com.parse\parse-android\1.13.0\58a7d54b6a4f28be11f0cecec93097eddf473e6f\parse-android-1.13.0.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="58a7d54b6a4f28be11f0cecec93097eddf473e6f">
-        <dex dex="C:\Users\Danny\Documents\UniTap\UniTap\app\build\intermediates\pre-dexed\debug\parse-android-1.13.0-430225353a669c2b85e23df03733268892006d34.jar" />
     </item>
 
 </items>

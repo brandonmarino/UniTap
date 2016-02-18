@@ -17,6 +17,9 @@
         android:name="com.parse.CLIENT_KEY"
         android:value="XKvIT81OpBTnTRrP2Uf42C08NVMEP20ez5U6y6Se" />
 
+    <meta-data android:name="com.facebook.sdk.ApplicationId"
+        android:value="@string/facebook_app_id"/>
+
     <application
         android:name=".UniTapApplication"
         android:allowBackup="true"

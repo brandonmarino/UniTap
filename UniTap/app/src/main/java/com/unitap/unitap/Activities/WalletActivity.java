@@ -297,7 +297,9 @@ public class WalletActivity extends NavigationPane {
         final String tmDevice, tmSerial, androidId;
         tmDevice = "" + tm.getDeviceId();
         tmSerial = "" + tm.getSimSerialNumber();
+
         androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
         UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() <<32) | tmSerial.hashCode()); //get UUID from this information (posthashing)
         String key = deviceUuid.toString();
         key = key.replace("-", "");  //get rid of padding '-' characters

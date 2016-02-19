@@ -286,14 +286,14 @@ public class WalletActivity extends NavigationPane {
     private String getKey(){
         //find device id for copy protection/encryption purposes
         //gather defining device IDs
-        final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
-        final String tmDevice, tmSerial, androidId;
-        tmDevice = "" + tm.getDeviceId();
-        tmSerial = "" + tm.getSimSerialNumber();
+        //final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        //final String tmDevice, tmSerial, androidId;
+       // tmDevice = "" + tm.getDeviceId();
+       // tmSerial = "" + tm.getSimSerialNumber();
 
-        androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        String androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() <<32) | tmSerial.hashCode()); //get UUID from this information (posthashing)
+        UUID deviceUuid = new UUID(androidId.hashCode(), "hello world".hashCode() /*((long)tmDevice.hashCode() <<32) | tmSerial.hashCode()*/); //get UUID from this information (posthashing)
         String key = deviceUuid.toString();
         key = key.replace("-", "");  //get rid of padding '-' characters
         return key;

@@ -8,6 +8,8 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.util.Log;
+
+import com.unitap.unitap.Activities.CardActivity;
 import com.unitap.unitap.Activities.HCEActivity;
 
 
@@ -17,10 +19,10 @@ import com.unitap.unitap.Activities.HCEActivity;
  */
 public class HCEAdapter {
 
-    private HCEActivity activity;
+    private CardActivity activity;
     private static boolean active = false;
 
-    public HCEAdapter (HCEActivity activity) {
+    public HCEAdapter (CardActivity activity) {
         this.activity = activity;
     }
 

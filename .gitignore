@@ -5,3 +5,16 @@
 .DS_Store
 /build
 /captures
+UniTap/.idea/gradle.xml
+UniTap/.idea/libraries/appcompat_v7_23_0_1.xml
+UniTap/.idea/libraries/cardslib_core_2_1_0.xml
+UniTap/.idea/libraries/cardview_v7_23_1_1.xml
+UniTap/.idea/libraries/design_23_0_1.xml
+UniTap/.idea/libraries/facebook_android_sdk_4_10_0.xml
+UniTap/.idea/libraries/library_1_2_2.xml
+UniTap/.idea/libraries/support_annotations_23_1_1.xml
+UniTap/.idea/libraries/support_v4_23_1_1.xml
+UniTap/.idea/misc.xml
+UniTap/app/app.iml
+UniTap/build/intermediates/dex-cache/cache.xml
+UniTap/local.properties

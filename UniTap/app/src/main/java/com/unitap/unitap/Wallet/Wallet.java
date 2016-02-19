@@ -85,6 +85,10 @@ public class Wallet{
         return (wallet.contains(newTag));
     }
 
+    public void removeAllTags(){
+        wallet.clear();
+    }
+
     public void removeTag(Tag tag){
         wallet.remove(tag);
     }

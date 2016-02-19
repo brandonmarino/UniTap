@@ -1,5 +1,6 @@
 package com.unitap.unitap.Activities;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,6 +19,9 @@ import android.widget.TextView;
 
 import com.unitap.unitap.NFCBackend.HCE.HCEAdapter;
 import com.unitap.unitap.R;
+import com.unitap.unitap.Wallet.Tag;
+
+import java.io.Serializable;
 
 public class CardActivity extends AppCompatActivity {
     private HCEAdapter hceAdapter;
@@ -38,22 +42,28 @@ public class CardActivity extends AppCompatActivity {
         ImageView cardImageView;
         hceAdapter = new HCEAdapter(this);
 
-        //hceAdapter.enableReading();
-        //Log.v("Enabling reading", "ENABLING");
+        //String cardName = getIntent().getStringExtra("cardName");
+        //int cardImage = getIntent().getIntExtra("cardImage", 0);\
 
-        String cardName = getIntent().getStringExtra("cardName");
-        int cardImage = getIntent().getIntExtra("cardImage", 0);
+        Serializable serObj = getIntent().getSerializableExtra("unitap.unitap.serializableObject");
+        if(serObj instanceof Tag) {
+            Tag tag = (Tag)serObj;
+            TextView cardNameView = (TextView) findViewById(R.id.textView2);
+            String cardName = tag.getName();
+            Bitmap cardImage = tag.getImage(this);
+            cardNameView.setText(cardName);
 
+            cardImageView = (ImageView) findViewById(R.id.imageView2);
+            cardImageView.setImageBitmap(cardImage);
+            //cardImageView.setImageResource(cardImage);
+            Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.animation);
+            cardImageView.startAnimation(myFadeInAnimation);
 
-        TextView cardNameView = (TextView) findViewById(R.id.textView2);
-        cardNameView.setText(cardName);
+            hceAdapter.sendMessage(cardName);
+        }else{
+            Log.e("Error: ","Extra not found");
+        }
 
-        cardImageView = (ImageView) findViewById(R.id.imageView2);
-        cardImageView.setImageResource(cardImage);
-        Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.animation);
-        cardImageView.startAnimation(myFadeInAnimation);
-
-        hceAdapter.sendMessage(cardName);
     }
     public void update(String replyFromServer){
         //do something with the message reply

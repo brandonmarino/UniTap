@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -35,6 +37,7 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -49,7 +52,6 @@ import me.drakeet.materialdialog.MaterialDialog;
 public class WalletActivity extends NavigationPane {
 
     protected static final int REQUEST_CODE = 100;
-    final int image = R.drawable.tagstand_logo_icon;
     private Wallet wallet = new Wallet("Some Guy");;  //model
     private ArrayList<Card> cardList = new ArrayList<>();   //view
     private File walletCache;   //file store encrypted xml equivalent of the user's wallet
@@ -157,17 +159,22 @@ public class WalletActivity extends NavigationPane {
         newCard.addCardHeader(header);
 
         //Stuff with card thumbnail
+        //final int image = R.drawable.tagstand_logo_icon;
         CardThumbnail thumbNail = new CardThumbnail(this);
-        thumbNail.setDrawableResource(image);
         newCard.addCardThumbnail(thumbNail);
+        final Bitmap icon = BitmapFactory.decodeResource(this.getResources(), R.drawable.tagstand_logo_icon);
 
+        //thumbNail.setDrawableResource(icon);
         //Make card clickable
         newCard.setOnClickListener(new Card.OnCardClickListener() {
             @Override
             public void onClick(Card card, View view) {
                 Intent intent = new Intent(wActivity, CardActivity.class);
-                intent.putExtra("cardName", tag.getName());
-                intent.putExtra("cardImage", image);
+                tag.setImage(icon,wActivity);
+
+                intent.putExtra("unitap.unitap.serializableObject", tag);
+                //intent.putExtra("cardName", tag.getName());
+                //intent.putExtra("cardImage", image);
                 startActivity(intent);
             }
         });

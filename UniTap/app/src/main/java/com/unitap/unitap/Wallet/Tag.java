@@ -1,22 +1,33 @@
 package com.unitap.unitap.Wallet;
 
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
+
 import org.simpleframework.xml.Default;
 
+import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Date;
-import com.unitap.unitap.Wallet.Tag;
+
 /**
  * This is the physical representation of the Tag itself.  These will need to be stored in some XML document on closure of the application.
  * Created by Brandon Marino on 9/22/2015.
  */
 @Default
-public class Tag{
+public class Tag implements Serializable {
     private String name;
-    //private Image picture = getDrawableResource(image);
+    private byte[] imageArray;
     private Date addedDate;
     private String payload;
     private String tagID;
+    private String companyName;
+    private int companyID;
 
     public Tag() {
         this.name = "Generic";
@@ -31,15 +42,8 @@ public class Tag{
      *                param id the id of the vendor/card type
      * @param payload the specific payload which needs to be dumped to the NDEF device
      */
-    public Tag(String name, /*Image picture, */ String payload) {
-        //super(context, R.layout.content_wallet);
-        /**
-         * Check the format of the tag.  Names and images can be fixed, however vendor id and payloads cannot.
-         */
-        //if (payload == null || payload.isValid())
-        //    throw new IoXmlException("payload is either empty or corrupt");
+    public Tag(String name, String payload) {
         this.name = name;
-        //this.picture = new Image();
         this.addedDate = new Date();
         this.payload = payload;
     }
@@ -65,13 +69,35 @@ public class Tag{
     }
     /**
      * The picture which will appear in the cardview for the tag. This will be used to make it look cool.
-     * @return The image
-
-    public Image getPicture() {
-    return picture;
-    }*/
+     * @return The imageArray
+    */
+    public byte[] getArrayImage() {
+        return imageArray;
+    }
     public Date getAddedDate(){
         return addedDate;
+    }
+
+    public String getCompanyName(){
+        return companyName;
+    }
+    public int getCompanyID(){
+        return companyID;
+    }
+
+    public String getTagID() {
+        return tagID;
+    }
+
+    public void getCompanyID(int companyID){
+        this.companyID = companyID;
+    }
+    public Bitmap getImage(Activity activity) {
+        Bitmap bmp;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable = true;
+        bmp = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.length, options);
+        return bmp;
     }
     /******************************************************
      *                         Setters
@@ -85,11 +111,30 @@ public class Tag{
         this.name = name;
     }
 
+    public void setImageArray() {
+        this.imageArray = imageArray;
+    }
+
     /** Set the picture which will make the carview look cool
      * @param picture the picture for the cardview*/
-    /*public void setPicture(Image picture) {
-        this.picture = picture;
-    */
+
+    public void setImage(Bitmap picture, Activity activity) {
+        imageArray = imageToByte(picture, activity);
+    }
+
+    /**
+     * Convert a bitmap into an array of bytes
+     * @param picture the original bitmap image
+     * @param activity the context of the original app
+     * @return the byte array
+     */
+    public byte[] imageToByte(Bitmap picture, Activity activity){
+        Drawable d = new BitmapDrawable(activity.getResources(), picture);
+        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        return stream.toByteArray();
+    }
 
     /**
      * Date that this card was added to the system
@@ -99,13 +144,15 @@ public class Tag{
         this.addedDate = addedDate;
     }
 
-    public String getTagID() {
-        return tagID;
-    }
 
     public void setTagID(String tagID) {
         this.tagID = tagID;
     }
+
+    public void setCompanyName(String companyName){
+        this.companyName = companyName;
+    }
+
 
     /************************************************************
      *              Comparators for Sorting
@@ -117,15 +164,15 @@ public class Tag{
             return institutionName1.compareTo(institutionName2);
         }
     }
-/*
+
     static class TagSortByInstitutionId implements Comparator<Tag>{
         public int compare(Tag tag1, Tag tag2){
-            Integer id1 = tag1.getInstitutionId();
-            Integer id2 = tag2.getInstitutionId();
+            String id1 = tag1.getCompanyName();
+            String id2 = tag2.getCompanyName();
             return id1.compareTo(id2);
         }
     }
-*/
+
     static class TagSortByDate implements Comparator<Tag>{
         public int compare(Tag tag1, Tag tag2){
             Date date1 = tag1.getAddedDate();

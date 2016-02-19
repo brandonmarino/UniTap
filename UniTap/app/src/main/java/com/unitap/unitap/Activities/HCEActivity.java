@@ -29,7 +29,7 @@ public class HCEActivity extends NavigationPane {
         setNewContentView(R.layout.activity_testing_hce);
         super.onCreate(savedInstanceState);
         setToolbarTitle("HCE Activity");
-        hceAdapter = new HCEAdapter(this);
+        //hceAdapter = new HCEAdapter(this);
         hceAdapter.enableReading(); //having this in both the onCreate and onResume could cause issues
         outgoingMessage = (EditText) findViewById(R.id.outgoing);
         hceLog = (TextView) findViewById(R.id.incoming);

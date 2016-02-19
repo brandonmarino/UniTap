@@ -29,7 +29,7 @@ public class LoginActivity extends Activity{
     EditText username, password;
     private static final int PERMISSION_REQUEST_CODE = 1;
     public static boolean permissionNFC = false;
-    public static boolean permissionReadPhoneState = false;
+    //public static boolean permissionReadPhoneState = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +111,7 @@ public class LoginActivity extends Activity{
     private void checkPermissions(){
 
         permissionNFC = (ContextCompat.checkSelfPermission(this, Manifest.permission.NFC) == PackageManager.PERMISSION_GRANTED);
-        permissionReadPhoneState = (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED);
+        //permissionReadPhoneState = (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED);
 
         if (!permissionNFC) {
             requestPermission(Manifest.permission.NFC,
@@ -119,11 +119,11 @@ public class LoginActivity extends Activity{
                             "It is necessary for the application to operate.\n" +
                             "On the following screen, please provide UniTap this permission.");
         }
-        if (!permissionReadPhoneState)
-            requestPermission(Manifest.permission.READ_PHONE_STATE,
-                    "UniTap needs access to the phone's state. This information will be used for encryption purposes.\n" +
-                            "It is necessary for the application to operate.\n" +
-                            "On the following screen, please provide UniTap this permission.");
+        //if (!permissionReadPhoneState)
+          //  requestPermission(Manifest.permission.READ_PHONE_STATE,
+            //        "UniTap needs access to the phone's state. This information will be used for encryption purposes.\n" +
+              //              "It is necessary for the application to operate.\n" +
+                //            "On the following screen, please provide UniTap this permission.");
 
     }
     private boolean requestPermission(String specificPermission, String explanation) {

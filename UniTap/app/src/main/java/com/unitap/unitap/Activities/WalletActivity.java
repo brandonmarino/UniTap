@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -35,6 +37,7 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -49,7 +52,6 @@ import me.drakeet.materialdialog.MaterialDialog;
 public class WalletActivity extends NavigationPane {
 
     protected static final int REQUEST_CODE = 100;
-    final int image = R.drawable.tagstand_logo_icon;
     private Wallet wallet = new Wallet("Some Guy");;  //model
     private ArrayList<Card> cardList = new ArrayList<>();   //view
     private File walletCache;   //file store encrypted xml equivalent of the user's wallet
@@ -156,18 +158,35 @@ public class WalletActivity extends NavigationPane {
         header.setTitle(tag.getName());
         newCard.addCardHeader(header);
 
+        final Bitmap icon = BitmapFactory.decodeResource(this.getResources(), R.drawable.tagstand_logo_icon);
+
         //Stuff with card thumbnail
+        //final int image = R.drawable.tagstand_logo_icon;
         CardThumbnail thumbNail = new CardThumbnail(this);
-        thumbNail.setDrawableResource(image);
+        thumbNail.setCustomSource(new CardThumbnail.CustomSource() {
+            @Override
+            public String getTag() {
+                return tag.getName();
+            }
+
+            @Override
+            public Bitmap getBitmap() {
+               return icon;
+            }
+        });
         newCard.addCardThumbnail(thumbNail);
 
+        //thumbNail.setDrawableResource(icon);
         //Make card clickable
         newCard.setOnClickListener(new Card.OnCardClickListener() {
             @Override
             public void onClick(Card card, View view) {
                 Intent intent = new Intent(wActivity, CardActivity.class);
-                intent.putExtra("cardName", tag.getName());
-                intent.putExtra("cardImage", image);
+                tag.setImage(icon,wActivity);
+
+                intent.putExtra("unitap.unitap.serializableObject", tag);
+                //intent.putExtra("cardName", tag.getName());
+                //intent.putExtra("cardImage", image);
                 startActivity(intent);
             }
         });
@@ -286,14 +305,14 @@ public class WalletActivity extends NavigationPane {
     private String getKey(){
         //find device id for copy protection/encryption purposes
         //gather defining device IDs
-        final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
-        final String tmDevice, tmSerial, androidId;
-        tmDevice = "" + tm.getDeviceId();
-        tmSerial = "" + tm.getSimSerialNumber();
+        //final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        //final String tmDevice, tmSerial, androidId;
+       // tmDevice = "" + tm.getDeviceId();
+       // tmSerial = "" + tm.getSimSerialNumber();
 
-        androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        String androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() <<32) | tmSerial.hashCode()); //get UUID from this information (posthashing)
+        UUID deviceUuid = new UUID(androidId.hashCode(), "hello world".hashCode() /*((long)tmDevice.hashCode() <<32) | tmSerial.hashCode()*/); //get UUID from this information (posthashing)
         String key = deviceUuid.toString();
         key = key.replace("-", "");  //get rid of padding '-' characters
         return key;
@@ -391,3 +410,4 @@ public class WalletActivity extends NavigationPane {
     }
     */
 }
+

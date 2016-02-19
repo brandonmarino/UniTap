@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -270,30 +272,34 @@ public class WalletActivity extends NavigationPane {
         }
     }
 
-    private void restoreWallet(){
+    private boolean restoreWallet(){
         //get Stored Wallet
-        /*
-        try {
-            String encryptedXml = "" + FileIO.readFromFile(walletCache);
-            if (!encryptedXml.equals("")) {
-                String xml = "" + crypt.decrypt(encryptedXml);
-                if (!xml.equals("")) {
-                    Wallet newWallet = ExtensibleMarkupLanguage.unMarshal(xml, (new Wallet()).getClass());
 
-                    //map tags to cards
-                    for(Tag currentTag: newWallet.getWallet()){
-                        addCard(currentTag);
-                    }
-                    wallet = newWallet;
-                }
-            }
-        }catch(ProjectExceptions e){
-            dialogMessage("Restore Wallet Error", e.getMessage());
-            return false;
+        if(isNetworkAvailable()){
+            retrieveCardsFromCloud();
+            return true;
         }
-        return true;
-        */
-        retrieveCardsFromCloud();
+        else {
+            try {
+                String encryptedXml = "" + FileIO.readFromFile(walletCache);
+                if (!encryptedXml.equals("")) {
+                    String xml = "" + crypt.decrypt(encryptedXml);
+                    if (!xml.equals("")) {
+                        Wallet newWallet = ExtensibleMarkupLanguage.unMarshal(xml, (new Wallet()).getClass());
+
+                        //map tags to cards
+                        for (Tag currentTag : newWallet.getWallet()) {
+                            addCard(currentTag, false);
+                        }
+                        wallet = newWallet;
+                    }
+                }
+            } catch (ProjectExceptions e) {
+                dialogMessage("Restore Wallet Error", e.getMessage());
+                return false;
+            }
+            return true;
+        }
     }
 
     private void showUserSettings() {
@@ -397,6 +403,13 @@ public class WalletActivity extends NavigationPane {
                 }
             }
         });
+    }
+
+    private boolean isNetworkAvailable(){
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
     }
 
     //Future method to store different icons to database, for now just using universal icon

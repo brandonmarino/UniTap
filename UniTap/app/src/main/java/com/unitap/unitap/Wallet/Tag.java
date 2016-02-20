@@ -8,6 +8,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 
+import com.unitap.unitap.Activities.CardActivity;
+import com.unitap.unitap.R;
+
 import org.simpleframework.xml.Default;
 
 import java.io.ByteArrayOutputStream;
@@ -30,8 +33,13 @@ public class Tag implements Serializable {
     private int companyID;
 
     public Tag() {
-        this.name = "Generic";
-        this.payload = "THIS IS A MESSAGE TO BE SEND BY NFC";
+        this.name = "John Doe";
+        this.addedDate = new Date();
+        this.payload = "THIS IS A MESSAGE TO BE SENT BY NFC";
+        this.imageArray = new byte[0];
+        this.tagID = "0";
+        this.companyName = "Generic";
+        this.companyID = 0;
     }
 
     /**
@@ -42,10 +50,18 @@ public class Tag implements Serializable {
      *                param id the id of the vendor/card type
      * @param payload the specific payload which needs to be dumped to the NDEF device
      */
-    public Tag(String name, String payload) {
+    public Tag(String name, String payload, Activity activity) {
+        this(name, BitmapFactory.decodeResource(activity.getResources(), R.drawable.tagstand_logo_icon), payload, "0", "Generic Company", 0, activity);
+    }
+
+    public Tag(String name, Bitmap image, String payload, String tagID, String companyName, int companyID, Activity wActivity) {
         this.name = name;
+        this.imageArray = imageToByte(image, wActivity);
         this.addedDate = new Date();
         this.payload = payload;
+        this.tagID = tagID;
+        this.companyName = companyName;
+        this.companyID = companyID;
     }
 
     /******************************************************
@@ -71,7 +87,7 @@ public class Tag implements Serializable {
      * The picture which will appear in the cardview for the tag. This will be used to make it look cool.
      * @return The imageArray
     */
-    public byte[] getArrayImage() {
+    public byte[] getImageArray() {
         return imageArray;
     }
     public Date getAddedDate(){

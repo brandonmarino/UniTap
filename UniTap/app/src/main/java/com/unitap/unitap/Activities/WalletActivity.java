@@ -97,7 +97,7 @@ public class WalletActivity extends NavigationPane {
                             @Override
                             public void onClick(View v) {
                                 nameOfNewCard = cardName.getText().toString();
-                                Tag tag = new Tag(nameOfNewCard, "payload");
+                                Tag tag = new Tag(nameOfNewCard, "payload",wActivity);
                                 addCard(tag, false);
                                 saveWallet();
                                 mMaterialDialog.dismiss();
@@ -160,7 +160,6 @@ public class WalletActivity extends NavigationPane {
         header.setTitle(tag.getName());
         newCard.addCardHeader(header);
 
-        final Bitmap icon = BitmapFactory.decodeResource(this.getResources(), R.drawable.tagstand_logo_icon);
 
         //Stuff with card thumbnail
         //final int image = R.drawable.tagstand_logo_icon;
@@ -173,7 +172,7 @@ public class WalletActivity extends NavigationPane {
 
             @Override
             public Bitmap getBitmap() {
-               return icon;
+               return tag.getImage(wActivity);
             }
         });
         newCard.addCardThumbnail(thumbNail);
@@ -184,7 +183,7 @@ public class WalletActivity extends NavigationPane {
             @Override
             public void onClick(Card card, View view) {
                 Intent intent = new Intent(wActivity, CardActivity.class);
-                tag.setImage(icon,wActivity);
+                //tag.setImage(icon,wActivity);
 
                 intent.putExtra("unitap.unitap.serializableObject", tag);
                 //intent.putExtra("cardName", tag.getName());
@@ -261,12 +260,16 @@ public class WalletActivity extends NavigationPane {
 
     private boolean saveWallet(){
         try {
+            Log.v("XML MARSHALLING: ", "STARTING");
             String xml = ExtensibleMarkupLanguage.marshal(wallet);
+            Log.v("XML: ", xml);
             String encryptedXml = crypt.encrypt(xml);
+            Log.v("Encrypted XML: ", encryptedXml);
             FileIO.saveToFile(walletCache, encryptedXml);
             return true;
 
         }catch(ProjectExceptions e){
+            e.printStackTrace();
             dialogMessage("Save Wallet Error", e.getMessage());
             return false;
         }
@@ -274,19 +277,28 @@ public class WalletActivity extends NavigationPane {
 
     private boolean restoreWallet(){
         //get Stored Wallet
-
+        long startTime = System.nanoTime();
+        long currentTime = 0;
+        Log.v("Restore Wallet: ", "start " + startTime);
         if(isNetworkAvailable()){
             retrieveCardsFromCloud();
+            currentTime = System.nanoTime();
+            Log.v("Retrieving Cards", "time-elapsed- " + (currentTime-startTime));
             return true;
         }
         else {
             try {
                 String encryptedXml = "" + FileIO.readFromFile(walletCache);
+                currentTime = System.nanoTime();
+                Log.v("Retrieving Excrypted", "time-elapsed- " + (currentTime-startTime));
                 if (!encryptedXml.equals("")) {
                     String xml = "" + crypt.decrypt(encryptedXml);
+                    currentTime = System.nanoTime();
+                    Log.v("Decrypting String", "time-elapsed- " + (currentTime-startTime));
                     if (!xml.equals("")) {
                         Wallet newWallet = ExtensibleMarkupLanguage.unMarshal(xml, (new Wallet()).getClass());
-
+                        currentTime = System.nanoTime();
+                        Log.v("SML Marshalling", "time-elapsed- " + (currentTime-startTime));
                         //map tags to cards
                         for (Tag currentTag : newWallet.getWallet()) {
                             addCard(currentTag, false);

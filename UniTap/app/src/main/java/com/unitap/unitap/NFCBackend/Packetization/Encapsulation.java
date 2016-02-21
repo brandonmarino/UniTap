@@ -1,4 +1,4 @@
-package com.unitap.unitap.NFCBackend.HCE.Packetization;
+package com.unitap.unitap.NFCBackend.Packetization;
 
 import java.nio.ByteBuffer;
 

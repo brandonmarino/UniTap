@@ -1,4 +1,4 @@
-package com.unitap.unitap.NFCBackend.HCE.Packetization;
+package com.unitap.unitap.NFCBackend.Packetization;
 
 /**
  * This will decompile a packet into it's included information.

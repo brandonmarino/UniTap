@@ -23,10 +23,6 @@ public class Wallet{
     @Element
     private Integer sortBy = 0;
 
-    //below fields should be moved to a settings activity which writes to a config file
-    //public enum SORT_TYPE {institution_name, institution_id, added_date}
-    //private SORT_TYPE sortBy = SORT_TYPE.institution_name;
-
     /**
      * Default constructor for simpleXML
      */
@@ -43,9 +39,9 @@ public class Wallet{
         this.username = username;
     }
 
-    /*******************************************
-     *              Getters
-     *******************************************/
+    /***********************************************************
+     *                      Getters
+     **********************************************************/
 
     /**
      * Get a tag by a certain location, good which you are selecting the card out of the the cardset
@@ -71,9 +67,9 @@ public class Wallet{
     public ArrayList<Tag> getWallet(){
         return wallet;
     }
-    /*****************************************
-     *      Adders
-     *****************************************/
+    /******************************************************************
+     *                      Adders
+     *****************************************************************/
     /**
      *  add a tag to the wallet
      * @param newTag a vitualTag tag which is being added to the wallet.  This should autosort it by the user's decided sort type
@@ -85,35 +81,29 @@ public class Wallet{
         return (wallet.contains(newTag));
     }
 
-    public void removeAllTags(){
-        wallet.clear();
-    }
-
-    public void removeTag(Tag tag){
-        wallet.remove(tag);
-    }
-
-    /********************************************
-     *              Sort this Wallet
-     ********************************************/
+    /****************************************************************
+     *                      Sort this Wallet
+     ***************************************************************/
     /**
      * Change the sort type
      * @param sortBy by type
      */
-    //public void changeSort(SORT_TYPE sortBy){
-    //    this.sortBy = sortBy;
-    //}
-
     public void changeSort(int sortBy){
         this.sortBy = sortBy;
     }
 
+    /**
+     * Actually sort the wallet
+     */
     public void sort(){
         switch (sortBy){
             case 0:
                 sortByInstitutionalName();
                 break;
             case 1:
+                sortByInstitutionalId();
+                break;
+            case 2:
                 sortByDate();
                 break;
             default:
@@ -121,11 +111,42 @@ public class Wallet{
         }
     }
 
+    /**
+     * Sort the wallet by institution name
+     */
     private void sortByInstitutionalName(){
         Collections.sort(wallet, new Tag.TagSortByInstitutionName());
     }
 
+    /**
+     * Sort the wallet by institution id
+     */
+    private void sortByInstitutionalId(){
+        Collections.sort(wallet, new Tag.TagSortByInstitutionId());
+    }
+
+    /**
+     * Sort the wallet by added date
+     */
     private void sortByDate(){
         Collections.sort(wallet, new Tag.TagSortByDate() );
+    }
+
+    /*************************************************************************
+     *                  Remove Tags from the Wallet
+     *************************************************************************/
+    /**
+     * Remove all of the tags from the wallet
+     */
+    public void removeAllTags(){
+        wallet.clear();
+    }
+
+    /**
+     * Remove a specific tag from the wallet
+     * @param tag
+     */
+    public void removeTag(Tag tag){
+        wallet.remove(tag);
     }
 }

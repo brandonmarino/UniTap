@@ -1,10 +1,15 @@
-package com.unitap.unitap.NFCBackend.HCE.Packetization;
+package com.unitap.unitap.NFCBackend.Packetization;
 
 /**
  * A Full CRC Generator
  * Created by Brandon Marino on 2015-11-26.
  */
 public class CRC16 {
+    /**
+     * Generate a CRC from a byte array
+     * @param input the byte array to generate the CRC on
+     * @return the int of the CRC (CRC is in the two lowest bytes)
+     */
     private static int generateCrc(final byte[] input) {
         /*Format: CRC-CCITT (0xFFFF)*/
         int crc = 0xFFFF;
@@ -23,8 +28,8 @@ public class CRC16 {
     /**
      * This function will take a full byte array, compare it's original Two bytes against the rest of the message
      * The entirety of the rest of the packet will be error checked. Nothing should have been changed
-     * @param input
-     * @return
+     * @param input int byte array with the appended crc
+     * @return if the crc in the first couple of bytes
      */
     protected static boolean verify(byte[] input){
         //now cut it down to remove the crc
@@ -40,8 +45,8 @@ public class CRC16 {
 
     /**
      * Combine two bytes into one integer
-     * @param bytes
-     * @return
+     * @param bytes the two bytes that should be in the least significant bytes of the integer
+     * @return the combined int
      */
     protected static int combineBytes(byte [] bytes){
         if (bytes.length <= 8){
@@ -52,8 +57,8 @@ public class CRC16 {
 
     /**
      * Take a message and add a crc of the message to the beginning
-     * @param input
-     * @return
+     * @param input the original message
+     * @return the message of the appended crc
      */
     protected static byte[] appendCRCBytes(byte[] input){
         int crcInt = generateCrc(input); // check
@@ -74,8 +79,8 @@ public class CRC16 {
 
     /**
      * Take a message that has a CRC attached to its head and extract out the message behind it
-     * @param appendedMessage
-     * @return
+     * @param appendedMessage take out the crc header ang get the rest of the message
+     * @return the original message without the crc
      */
     protected static String stripOutCRCHeader(byte[] appendedMessage){
 

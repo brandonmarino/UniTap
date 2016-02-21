@@ -260,11 +260,8 @@ public class WalletActivity extends NavigationPane {
 
     private boolean saveWallet(){
         try {
-            Log.v("XML MARSHALLING: ", "STARTING");
             String xml = ExtensibleMarkupLanguage.marshal(wallet);
-            Log.v("XML: ", xml);
             String encryptedXml = crypt.encrypt(xml);
-            Log.v("Encrypted XML: ", encryptedXml);
             FileIO.saveToFile(walletCache, encryptedXml);
             return true;
 
@@ -290,7 +287,7 @@ public class WalletActivity extends NavigationPane {
             try {
                 String encryptedXml = "" + FileIO.readFromFile(walletCache);
                 currentTime = System.nanoTime();
-                Log.v("Retrieving Excrypted", "time-elapsed- " + (currentTime-startTime));
+                Log.v("Retrieving Encrypted", "time-elapsed- " + (currentTime-startTime));
                 if (!encryptedXml.equals("")) {
                     String xml = "" + crypt.decrypt(encryptedXml);
                     currentTime = System.nanoTime();
@@ -298,7 +295,7 @@ public class WalletActivity extends NavigationPane {
                     if (!xml.equals("")) {
                         Wallet newWallet = ExtensibleMarkupLanguage.unMarshal(xml, (new Wallet()).getClass());
                         currentTime = System.nanoTime();
-                        Log.v("SML Marshalling", "time-elapsed- " + (currentTime-startTime));
+                        Log.v("XML Marshalling", "time-elapsed- " + (currentTime-startTime));
                         //map tags to cards
                         for (Tag currentTag : newWallet.getWallet()) {
                             addCard(currentTag, false);

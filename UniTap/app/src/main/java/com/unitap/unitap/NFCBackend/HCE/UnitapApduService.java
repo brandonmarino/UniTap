@@ -11,18 +11,16 @@ import android.util.Log;
 public class UnitapApduService extends HostApduService {
 
     /***********************************************************************************************
-     *                      App State Functions (Create, Pause, Resume)
+     *                      Service State Functions (Create, Pause, Resume)
      ***********************************************************************************************/
 
     private String lastMessage = "Button Not Pressed!------------";
+    private boolean lastMessageSent = false;
+    private boolean lastAckRecieved = false;
     private byte count = 0;  //byte so that it uses less of the limited packet room
 
     /**
      * What happens when the service is first run using startService()
-     * @param intent
-     * @param flags
-     * @param startId
-     * @return
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -43,12 +41,11 @@ public class UnitapApduService extends HostApduService {
 
     /**
      * Service was deactivated, why?
-     * @param reason
+     * @param reason some exist reason
      */
     @Override
     public void onDeactivated(int reason) {
         Log.i("HCEDEMO", "Deactivated: " + reason);
-
     }
 
     /***********************************************************************************************
@@ -64,6 +61,7 @@ public class UnitapApduService extends HostApduService {
     @Override
     public byte[] processCommandApdu(byte[] apdu, Bundle extras) {
         registerBroadcastReceivers(); //register broadcasts receivers to handle communication
+        /*
         if (HCEAdapter.isActive() || apdu == null) {
             String response = new String(apdu);
             if (!response.isEmpty()) {
@@ -89,20 +87,8 @@ public class UnitapApduService extends HostApduService {
                 return lastMessage.getBytes();//"ERR#Received".getBytes();
             }
         }
+        */
         return "u".getBytes();
-    }
-
-    /**
-     * Send a response to the terminal
-     * @param message
-     */
-    private void sendToTerminal(String message){
-        if (HCEAdapter.isActive()) {
-            lastMessage = message;
-            //generate CRC and append to message with # separator
-            //encrypt message
-        //    sendResponseApdu(message.getBytes());
-        }
     }
 
     /**
@@ -151,9 +137,8 @@ public class UnitapApduService extends HostApduService {
     final BroadcastReceiver hceNotificationsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
             String hcedata = intent.getStringExtra("hcedata");
-            //sendToTerminal(hcedata);
+            //sendToServer(hcedata);
             lastMessage = hcedata;
             Log.v("Send-Term", hcedata);
         }
@@ -163,17 +148,11 @@ public class UnitapApduService extends HostApduService {
      * Register a broadcast receiver for this Service
      * This is to receive messages from the application using this service
      */
-    private void registerBroadcastReceivers(){
+    private void registerBroadcastReceivers() {
         final IntentFilter hceNotificationsFilter = new IntentFilter();
         hceNotificationsFilter.addAction("unitap.action.NOTIFY_HCE_DATA");
         registerReceiver(hceNotificationsReceiver, hceNotificationsFilter);
         Log.v("Registering Receiver", "HCE Receiver");
-/*
-        final IntentFilter stateChangeNotificationsFilter = new IntentFilter();
-        stateChangeNotificationsFilter.addAction("unitap.action.READER_STATE_CHANGE");
-        registerReceiver(stateChangeService, stateChangeNotificationsFilter);
-        Log.v("Registering Receiver", "State Changer");
-*/
     }
 
     /**

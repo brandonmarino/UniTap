@@ -58,7 +58,7 @@ public class Tag implements Serializable {
      * @param wActivity reference to the activity, required for image manipulation
      */
     public Tag(String name, String payload, Activity wActivity) {
-        this(name, BitmapFactory.decodeResource(wActivity.getResources(), R.drawable.tagstand_logo_icon), payload, "0", "Generic Company", 0, wActivity);
+        this(name, BitmapFactory.decodeResource(wActivity.getResources(), R.drawable.icon_black_on_blank), payload, "0", "Generic Company", 0, wActivity);
     }
 
     /**

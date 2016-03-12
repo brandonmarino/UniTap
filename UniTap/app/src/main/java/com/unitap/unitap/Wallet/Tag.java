@@ -29,7 +29,7 @@ public class Tag implements Serializable {
     private String name;
     private String imageFile;
     private Date addedDate;
-    private String payload;
+    private byte[] payload;
     private String tagID;
     private String companyName;
     private int companyID;
@@ -40,7 +40,7 @@ public class Tag implements Serializable {
     public Tag() {
         this.name = "John Doe";
         this.addedDate = new Date();
-        this.payload = "THIS IS A MESSAGE TO BE SENT BY NFC";
+        this.payload = "THIS IS A MESSAGE".getBytes();
         //this.imageArray = new byte[0];
         this.imageFile = "FileName";
         this.tagID = "0";
@@ -57,8 +57,8 @@ public class Tag implements Serializable {
      * @param payload the specific payload which needs to be dumped to the NDEF device
      * @param wActivity reference to the activity, required for image manipulation
      */
-    public Tag(String name, String payload, Activity wActivity) {
-        this(name, BitmapFactory.decodeResource(wActivity.getResources(), R.drawable.icon_black_on_blank), payload, "0", "Generic Company", 0, wActivity);
+    public Tag(String name, byte[] payload, Activity wActivity) {
+        this(name, BitmapFactory.decodeResource(wActivity.getResources(), R.drawable.tagstand_logo_icon), payload, "0", "Generic Company", 0, wActivity);
     }
 
     /**
@@ -71,7 +71,7 @@ public class Tag implements Serializable {
      * @param companyID The id of the company
      * @param wActivity reference to the activity, required for image manipulation
      */
-    public Tag(String name, Bitmap image, String payload, String tagID, String companyName, int companyID, Activity wActivity) {
+    public Tag(String name, Bitmap image, byte[] payload, String tagID, String companyName, int companyID, Activity wActivity) {
         this.name = name;
         this.addedDate = new Date();
         setImage(image, wActivity);
@@ -97,7 +97,7 @@ public class Tag implements Serializable {
      * Get the payload which contains the byte map of the tag which this is representing
      * @return the payload being represented here
      */
-    public String getPayload() {
+    public byte[] getPayload() {
         return payload;
     }
 

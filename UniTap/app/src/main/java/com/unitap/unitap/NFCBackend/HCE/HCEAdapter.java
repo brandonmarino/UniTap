@@ -4,13 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.nfc.NfcAdapter;
-import android.nfc.Tag;
-import android.nfc.tech.IsoDep;
 import android.util.Log;
 
 import com.unitap.unitap.Activities.CardActivity;
-import com.unitap.unitap.Activities.HCEActivity;
 
 
 /**
@@ -21,6 +17,7 @@ public class HCEAdapter {
 
     private CardActivity activity;
     private static boolean active = false;
+    private static byte[] newMessage = null;
 
     public HCEAdapter (CardActivity activity) {
         this.activity = activity;
@@ -34,14 +31,19 @@ public class HCEAdapter {
         return active;
     }
 
+    public static byte[] getMessage(){
+        return newMessage;
+    }
+    private static void setMessage(byte[] message){
+        newMessage = message;
+    }
+
     /**
      * Send a message to the terminal
      * @param message
      */
-    public void sendMessage(String message){
-        Intent intent = new Intent("unitap.action.NOTIFY_HCE_DATA");
-        intent.putExtra("hcedata", message);
-        activity.sendBroadcast(intent);
+    public void provisioService(byte[] message, int companyID, byte[] phoneID){
+        UnitapApduService.provisionTransfer(message, companyID, phoneID);
     }
 
     /**

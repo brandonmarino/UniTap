@@ -13,7 +13,6 @@ import android.view.MenuItem;
 
 import com.unitap.unitap.Activities.SettingsActivity;
 import com.unitap.unitap.Activities.WalletActivity;
-import com.unitap.unitap.Activities.HCEActivity;
 import com.unitap.unitap.R;
 
 public abstract class NavigationPane extends AppCompatActivity
@@ -95,9 +94,6 @@ public abstract class NavigationPane extends AppCompatActivity
         Intent newIntent;
         if (id == R.id.nav_wallet) {
             newIntent = new Intent(this, WalletActivity.class);
-            startActivity(newIntent);
-        } else if (id == R.id.nav_testHCE){
-            newIntent = new Intent(this, HCEActivity.class);
             startActivity(newIntent);
         } else if (id == R.id.nav_loginout) {
             //logout of the current wallet

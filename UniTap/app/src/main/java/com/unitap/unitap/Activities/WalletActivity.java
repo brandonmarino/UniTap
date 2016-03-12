@@ -97,7 +97,7 @@ public class WalletActivity extends NavigationPane {
                             @Override
                             public void onClick(View v) {
                                 nameOfNewCard = cardName.getText().toString();
-                                Tag tag = new Tag(nameOfNewCard, "payload",wActivity);
+                                Tag tag = new Tag(nameOfNewCard, "payload".getBytes(),wActivity);
                                 addCard(tag, false);
                                 saveWallet();
                                 mMaterialDialog.dismiss();

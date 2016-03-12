@@ -8,23 +8,31 @@ import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.unitap.unitap.NFCBackend.Packetization.DeEncapsulation;
+import com.unitap.unitap.NFCBackend.Packetization.Encapsulation;
+
+import java.util.Arrays;
+
 public class UnitapApduService extends HostApduService {
 
     /***********************************************************************************************
      *                      Service State Functions (Create, Pause, Resume)
      ***********************************************************************************************/
 
-    private String lastMessage = "Button Not Pressed!------------";
-    private boolean lastMessageSent = false;
-    private boolean lastAckRecieved = false;
-    private byte count = 0;  //byte so that it uses less of the limited packet room
+    private byte[] lastMessage = null;
+    private static byte[] nextMessage = null;
+    private static byte[] originalMessage = null;
+    private boolean switchedIntoActivityDuringTransaction = false;
+    private int count = 0;
 
     /**
      * What happens when the service is first run using startService()
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_STICKY;
+        if(!HCEAdapter.isActive())
+            switchedIntoActivityDuringTransaction = true;
+        return START_NOT_STICKY;
     }
 
     /**
@@ -32,10 +40,8 @@ public class UnitapApduService extends HostApduService {
      */
     @Override
     public void onDestroy(){
-        //Log.v("Deregister Receiver", "HCE Receiver + State-Change Receiver");
-        unregisterReceiver(hceNotificationsReceiver);   //remove the broadcast reciever
-        //unregisterReceiver(stateChangeService);     //remove the state-change receiver
-        //enabled = false;
+        unregisterReceiver(hceNotificationsReceiver);   //remove the broadcast receiver
+        count = 0;
         super.onDestroy();
     }
 
@@ -45,12 +51,18 @@ public class UnitapApduService extends HostApduService {
      */
     @Override
     public void onDeactivated(int reason) {
-        Log.i("HCEDEMO", "Deactivated: " + reason);
+        Log.i("ApduService", "Phone Disconnected");
     }
 
     /***********************************************************************************************
      *                      APDU Processing, HCE Messaging
      ***********************************************************************************************/
+
+    private void recurringOperations(){
+        registerBroadcastReceivers(); //register broadcasts receivers to handle communication
+        if(nextMessage == null && lastMessage == null && originalMessage !=null && count == 0)
+            nextMessage = originalMessage;
+    }
 
     /**
      * Receives an APDU (if that APDU was registered to the same AID as the app/service)
@@ -60,62 +72,192 @@ public class UnitapApduService extends HostApduService {
      */
     @Override
     public byte[] processCommandApdu(byte[] apdu, Bundle extras) {
-        registerBroadcastReceivers(); //register broadcasts receivers to handle communication
-        /*
-        if (HCEAdapter.isActive() || apdu == null) {
-            String response = new String(apdu);
-            if (!response.isEmpty()) {
-                Log.v("Resp-Term", new String(apdu));
-                if (selectAidApdu(apdu)) {
-                    Log.v("Analyzing Response", "Select APDU");
-                    //decrypt, etc
-                    //if CRC matches
-                    return "ACK#Hello".getBytes();
-                    //else return ERR#Hello
-                } else if (ackApdu(apdu)) {
-                    //nothing else needed in the exchange
-                    return "Hello".getBytes(); //send new message from here or stall
-                } else if (errorApdu(apdu)) {
-                    //retry HCE send
-                    return "ACK#ERROR".getBytes();
-                } else if (requestApdu(apdu)) {
-                    //send message out
-                    sendToBroadcastReceiver(response);
-                    return "ACK#Received".getBytes();
+        recurringOperations();
+        if (HCEAdapter.isActive() && !switchedIntoActivityDuringTransaction){
+            boolean isEmpty = (apdu == null) || (apdu.length == 0); //check if empty message
+            if(isJunk(apdu) || isEmpty) {
+                //use this as a chance to send the next message
+                if(nextMessage == null){
+                    return "u.".getBytes();
+                    //return junk back to keep transfer going
+                } else {
+                    //there is a message to return
+                    if (lastMessage == null){
+                        //lastMessage received its ack and was wiped
+                        lastMessage = nextMessage;
+                        nextMessage = null;
+                        return lastMessage;
+                    } else {
+                        //return junk until that lastAck is received
+                        return "u.".getBytes();
+                    }
                 }
-                Log.v("SENDING TO ARDUINO", lastMessage);
-                return lastMessage.getBytes();//"ERR#Received".getBytes();
             }
+            return handleUniTapMessage(apdu);
+        } else
+            return handleRejection(apdu);
+    }
+
+    /************************************************************
+     *              Create Protocol Responses
+     * **********************************************************/
+
+    /**
+     * create an ack packet to a message from the terminal
+     * @param apdu the original message form the server
+     * @return an Ack apdu
+     */
+    private byte[] createAck(byte[] apdu){
+        apdu[3] = 0x02;
+        //this should be modified later
+        return apdu;
+    }
+
+    /**
+     * create an ack packet to a message from the terminal
+     * @param apdu the original message from the server
+     * @return an error apdu
+     */
+    private byte[] createError(byte[] apdu){
+        apdu[3] = 0x03;
+        //this should be modified later
+        return apdu;
+    }
+
+    /***********************************************************
+     *                UniTap Protocol Handlers
+     ***********************************************************/
+    /**
+     * A message from a device has been received when the service was active, it passed the 'u.' and empty filter
+     * @param apdu
+     * @return
+     */
+    private byte[] handleUniTapMessage(byte[] apdu){
+        //Log.v("Terminal Message", new String(apdu));
+        Log.v("Message from Terminal", Arrays.toString(apdu));
+        if (isSelectAidApdu(apdu)) {
+            Log.i("Term-Message","Select Apdu");
+            return handleUniTapSelectApdu(apdu);
         }
-        */
-        return "u".getBytes();
+        else if (isGenericApdu(apdu)) {
+            Log.i("Term-Message","Generic Apdu");
+
+            return handleUniTapGeneric(apdu);
+        }
+        else if (isAckApdu(apdu)) {
+            Log.i("Term-Message","Ack Apdu");
+            return handleUniTapAck(apdu);
+        }
+        else if (isErrorApdu(apdu)) {
+            Log.i("Term-Message","Error Apdu");
+            return handleUniTapError(apdu);
+        }
+        return "u.".getBytes();
     }
 
     /**
-     * Check if the apdu is an acknowledgement
-     * @param candidate some apdu from a device
+     * Handle the rejection due to the application not being active
+     * @param apdu the original message
+     * @return the rejection response
      */
-    private boolean ackApdu(byte[] candidate){
-        String response = new String(candidate);
-        return response.regionMatches(0,"ACK#",0,4);
+    private byte[] handleRejection(byte[] apdu){
+        if (isSelectAidApdu(apdu))
+            return "j.".getBytes();
+        return "o.".getBytes();
+    }
+
+    /**
+     * Handle the original select AID-APDU
+     * For now, just generate an Ack for the terminal
+     * @param apdu the aid apdu
+     * @return the response to this aid-apdu
+     */
+    private byte[] handleUniTapSelectApdu(byte[] apdu){
+        return createAck(apdu);
+    }
+
+    /**
+     * Handle a generic UniTap message.
+     * - Compare the CRC against the message
+     * - Pass stripped down message up to the adapter
+     * @param apdu
+     * @return
+     */
+    private byte[] handleUniTapGeneric(byte[] apdu){
+        if(DeEncapsulation.verifyCRC(apdu)) {
+            count++;
+            byte[] message = DeEncapsulation.getMessage(apdu);
+            sendToBroadcastReceiver(new String(message));
+            return createAck(apdu);
+        }
+        else
+            return createError(apdu);
+    }
+
+    /**
+     * Handle a UniTap Acknowledgment.
+     *  - save the received status
+     *  - respond with... junk... do not ack an ack
+     * @param apdu the ack apdu
+     * @return the response for this ack
+     */
+    private byte[] handleUniTapAck(byte[] apdu){
+        lastMessage = null;
+        count++;
+        return "u.".getBytes();
+    }
+
+    /**
+     *
+     * @param apdu
+     * @return
+     */
+    private byte[] handleUniTapError(byte[] apdu){
+        return createError(apdu);
+    }
+
+    /**
+     * Check if the apdu is a generic message. Deal with appropriately.
+     * @param apdu some apdu-message from a device
+     */
+
+    /***************************************************
+     *              Message Type Comparators
+     ***************************************************/
+    private boolean isGenericApdu(byte[] apdu){
+        Log.v("Byte Array-Terminal",""+apdu[0]+", "+apdu[1]+", "+apdu[2]);
+        if(apdu[2] == 0x00) {
+            Log.v("HCE: Terminal Generic", "Packet-Number:- " + count);
+            Log.v("Full Message", Arrays.toString(apdu));
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if the apdu is an acknowledgement, ignore
+     * @param apdu some apdu-message from a device
+     */
+    private boolean isAckApdu(byte[] apdu){
+        if(apdu[2] == 0x01) {
+            Log.v("HCE: Terminal Ack", "Packet-Number:- " + count);
+            Log.v("Full Message", Arrays.toString(apdu));
+            return true;
+        }
+        return false;
     }
 
     /**
      * Check if the apdu is an error and the lsat message needs to be resent
-     * @param candidate some apdu from a device
+     * @param apdu some apdu-message from a device
      */
-    private boolean errorApdu(byte[] candidate){
-        String response = new String(candidate);
-        return response.regionMatches(0,"ERR#",0,4);
-    }
-
-    /**
-     * Check if the apdu is an error and the lsat message needs to be resent
-     * @param candidate some apdu from a device
-     */
-    private boolean requestApdu(byte[] candidate){
-        String response = new String(candidate);
-        return response.regionMatches(0, "REQ#", 0, 4);
+    private boolean isErrorApdu(byte[] apdu){
+        if(apdu[2] == 0x02) {
+            Log.v("HCE: Terminal Error", "Packet-Number:- " + count);
+            Log.v("Full Message", Arrays.toString(apdu));
+            return true;
+        }
+        return false;
     }
 
     /**check if this is the very first APDU from the broadcaster
@@ -123,13 +265,23 @@ public class UnitapApduService extends HostApduService {
      * @param apdu payload
      * @return if this is a selectApdu
      */
-    private boolean selectAidApdu(byte[] apdu) {
+    private boolean isSelectAidApdu(byte[] apdu) {
         return apdu.length >= 2 && apdu[0] == (byte)0 && apdu[1] == (byte)0xa4;
+    }
+
+    private boolean isJunk(byte[] apdu){
+        return (apdu[0] == 0x75 && apdu[1] == 0x2e);
     }
 
     /***********************************************************************************************
      *               Receive Messages from another Activity which passed a defined Filter
      ***********************************************************************************************/
+
+    public static void provisionTransfer(byte[] message, int companyID, byte[] phoneID){
+        message = Encapsulation.encapsulate(message, 0, phoneID, companyID);
+        nextMessage = message;
+        originalMessage = message;
+    }
 
     /**
      * Receive some data (Message) from an external Activity.  Used for sending direct messages
@@ -137,10 +289,8 @@ public class UnitapApduService extends HostApduService {
     final BroadcastReceiver hceNotificationsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String hcedata = intent.getStringExtra("hcedata");
-            //sendToServer(hcedata);
-            lastMessage = hcedata;
-            Log.v("Send-Term", hcedata);
+            byte[] hcedata = intent.getByteArrayExtra("hcedata");
+            nextMessage = hcedata;
         }
     };
 
@@ -152,7 +302,6 @@ public class UnitapApduService extends HostApduService {
         final IntentFilter hceNotificationsFilter = new IntentFilter();
         hceNotificationsFilter.addAction("unitap.action.NOTIFY_HCE_DATA");
         registerReceiver(hceNotificationsReceiver, hceNotificationsFilter);
-        Log.v("Registering Receiver", "HCE Receiver");
     }
 
     /**

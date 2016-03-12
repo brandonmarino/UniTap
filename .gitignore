@@ -18,3 +18,4 @@ UniTap/app/app.iml
 UniTap/local.properties
 UniTap/.idea/gradle.xml
 UniTap/.idea/workspace.xml
+UniTap/build/intermediates/dex-cache/cache.xml

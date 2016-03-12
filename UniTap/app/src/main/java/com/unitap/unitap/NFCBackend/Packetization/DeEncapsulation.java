@@ -1,9 +1,11 @@
 package com.unitap.unitap.NFCBackend.Packetization;
 
 /**
- * This will decompile a packet into it's included information.
- *0                     2            3                      4                      6                   9
- * | 2-byte Message CRC | 1 byte Type | 1 byte packet-number | 2 byte phone-id CRC | 3-byte Company id |  <=23 byte message user's id
+ * This will decompile a packet (From the terminal) into it's included information.
+ * This is the packet design from the terminal to the phone
+ * 0                     2            3                      4
+ * | 2-byte Message CRC | 1 byte Type | 1 byte packet-length | <=27 byte message user's id
+ *
  * Packet types: (0=Generic ,1=Acknowledgement ,2=Error)
  *
  */
@@ -11,7 +13,6 @@ public class DeEncapsulation {
     final static int HCE_MAX_MESSAGE = 31;
 
     public static boolean verifyCRC(byte[] message){
-        //starts at message[0]
         return CRC16.verify(message);
     }
 
@@ -19,28 +20,14 @@ public class DeEncapsulation {
         byte[] typeByte = getSubArray(message, 2, 3);
         return CRC16.combineBytes(typeByte);
     }
-//--
+
     public static Integer getPacketNumber(byte[] message){
         byte[] numByte = getSubArray(message, 3, 4);
-        return 1;
-        //return CRC16.combineBytes(typeByte);
-    }
-
-    public static byte[] getPhoneIdCrc(byte[] message){
-        byte[] pidByte = getSubArray(message, 2, 3);
-        //return CRC16.combineBytes(typeByte);
-        byte[] output = {0x00};
-        return output;
-    }
-
-    public static Integer getCompanyId(byte[] message){
-        byte[] cidByte = getSubArray(message, 2, 3);
-        //return CRC16.combineBytes(typeByte);
-        return 1;
+        return CRC16.combineBytes(numByte);
     }
 
     public static byte[] getMessage(byte[] message){
-        byte [] cutMessage  = getSubArray(message, 9, message.length);
+        byte [] cutMessage  = getSubArray(message, 4, message.length);
         return cutMessage;
     }
 
@@ -49,5 +36,4 @@ public class DeEncapsulation {
         System.arraycopy(message, start, output, 0, end-start);
         return output;
     }
-
 }

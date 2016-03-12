@@ -2,6 +2,7 @@ package com.unitap.unitap.Activities;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,10 +23,11 @@ import com.unitap.unitap.R;
 import com.unitap.unitap.Wallet.Tag;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class CardActivity extends AppCompatActivity {
     private HCEAdapter hceAdapter;
-
+    private Tag tag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,13 +43,13 @@ public class CardActivity extends AppCompatActivity {
     private void startTransaction(){
         ImageView cardImageView;
         hceAdapter = new HCEAdapter(this);
-
+        hceAdapter.enableReading();
         //String cardName = getIntent().getStringExtra("cardName");
         //int cardImage = getIntent().getIntExtra("cardImage", 0);\
 
         Serializable serObj = getIntent().getSerializableExtra("unitap.unitap.serializableObject");
         if(serObj instanceof Tag) {
-            Tag tag = (Tag)serObj;
+            tag = (Tag)serObj;
             TextView cardNameView = (TextView) findViewById(R.id.textView2);
             String cardName = tag.getName();
             Bitmap cardImage = tag.getImage(this);
@@ -58,8 +60,6 @@ public class CardActivity extends AppCompatActivity {
             //cardImageView.setImageResource(cardImage);
             Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.animation);
             cardImageView.startAnimation(myFadeInAnimation);
-
-            hceAdapter.sendMessage(cardName);
         }else{
             Log.e("Error: ","Extra not found");
         }
@@ -72,6 +72,8 @@ public class CardActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         hceAdapter.enableReading();
+
+        hceAdapter.provisioService(tag.getPayload(), tag.getCompanyID(), generateKey());
         Log.v("Enabling reading", "ENABLING");
         super.onResume();
     }
@@ -84,5 +86,14 @@ public class CardActivity extends AppCompatActivity {
         hceAdapter.disableReader();
         Log.v("Disabling reading", "DISABLING");
         super.onPause();
+    }
+
+    private byte[] generateKey(){
+        String androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        UUID deviceUuid = new UUID(androidId.hashCode(), "hello world".hashCode() /*((long)tmDevice.hashCode() <<32) | tmSerial.hashCode()*/); //get UUID from this information (posthashing)
+        String key = deviceUuid.toString();
+        key = key.replace("-", "");  //get rid of padding '-' characters
+        return key.getBytes();
     }
 }

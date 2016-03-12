@@ -1,0 +1,43 @@
+0 cards
+
+0.007 seconds
+
+1 cards
+
+time-elapsed- 3.3 seconds
+
+3 cards
+
+time-elapsed- 11.0 seconds
+
+5 cards
+
+time-elapsed- 18.9 seconds
+
+7 cards 
+
+time-elapsed- 26.0 seconds
+
+9 cards
+
+time-elapsed- 33.2 seconds
+
+11 cards
+
+time-elapsed- 40.8 seconds
+
+13 cards
+
+time-elapsed- 49.0 seconds
+
+15 cards
+
+time-elapsed- 55.8 seconds
+
+17 cards
+
+time-elapsed- 62.0 seconds
+
+19 cards
+
+time-elapsed- 72.0 seconds

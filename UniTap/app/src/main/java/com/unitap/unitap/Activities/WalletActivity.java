@@ -21,6 +21,8 @@ import android.widget.EditText;
 
 import com.parse.FindCallback;
 import com.parse.GetCallback;
+import com.parse.GetDataCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
@@ -172,7 +174,7 @@ public class WalletActivity extends NavigationPane {
 
             @Override
             public Bitmap getBitmap() {
-               return tag.getImage(wActivity);
+                return tag.getImage(wActivity);
             }
         });
         newCard.addCardThumbnail(thumbNail);
@@ -340,13 +342,16 @@ public class WalletActivity extends NavigationPane {
         }
         if(choice.equals("2")){
             themeId = R.style.AppTheme_Dark;
+            for(Card card : cardList){
+                card.setBackgroundResourceId(R.drawable.dark_card_background);
+            }
         }
         if(choice.equals("3")){
             themeId = R.style.AppTheme_NoActionBar;
         }
         setTheme(themeId);
-
     }
+
 
     private class PreferenceChangeListener implements
             SharedPreferences.OnSharedPreferenceChangeListener {
@@ -359,9 +364,14 @@ public class WalletActivity extends NavigationPane {
     }
 
     private void saveCardToCloud(Tag tag){
+        byte[] cardImageData = tag.bitmapToByteArray(tag.getImage(wActivity), wActivity);
+        ParseFile cardImageFile = new ParseFile("cardimage.jpeg", cardImageData);
+        cardImageFile.saveInBackground();
+
         ParseObject card = new ParseObject("Card");
         card.put("cardName", tag.getName());
         card.put("owner", ParseUser.getCurrentUser());
+        card.put("cardIcon", cardImageFile);
         card.saveInBackground();
     }
 
@@ -376,10 +386,20 @@ public class WalletActivity extends NavigationPane {
                     cardList.clear();
                     for (int i = 0; i < cardsParseList.size(); i++) {
                         Card card = new Card(walletActivity, R.layout.content_wallet);
-                        final Tag tag = new Tag();
+                        final Tag tag = new Tag(wActivity);
                         tag.setName(cardsParseList.get(i).getString("cardName"));
                         tag.setTagID(cardsParseList.get(i).getObjectId());
                         //Make card header
+
+                        //Set image
+                        ParseFile cardImageFile = (ParseFile) cardsParseList.get(i).get("cardIcon");
+                        cardImageFile.getDataInBackground(new GetDataCallback() {
+                            @Override
+                            public void done(byte[] data, ParseException e) {
+                                Bitmap image = tag.byteArrayToBitmap(data, wActivity);
+                            }
+                        });
+
                         addCard(tag, true);
                     }
                     mCardArrayAdapter.notifyDataSetChanged();

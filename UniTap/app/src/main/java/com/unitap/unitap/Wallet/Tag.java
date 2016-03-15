@@ -37,7 +37,8 @@ public class Tag implements Serializable {
     /**
      * Blank default constructor for SimpleXML marshaling
      */
-    public Tag() {
+    public Tag(Activity wActivity) {
+        this.addedDate = new Date();
         this.name = "John Doe";
         this.addedDate = new Date();
         this.payload = "THIS IS A MESSAGE".getBytes();
@@ -46,6 +47,8 @@ public class Tag implements Serializable {
         this.tagID = "0";
         this.companyName = "Generic";
         this.companyID = 0;
+        Bitmap image = BitmapFactory.decodeResource(wActivity.getResources(), R.drawable.tagstand_logo_icon);
+        setImage(image, wActivity);
     }
 
     /**
@@ -246,7 +249,7 @@ public class Tag implements Serializable {
      * @param wActivity the context of the original app
      * @return the byte array
      */
-    public static byte[] bitmapToByteArray(Bitmap picture, Activity wActivity){
+    public byte[] bitmapToByteArray(Bitmap picture, Activity wActivity){
         Drawable d = new BitmapDrawable(wActivity.getResources(), picture);
         Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -260,7 +263,7 @@ public class Tag implements Serializable {
      * @param wActivity a reference to the activity
      * @return the combined bitmap
      */
-    public static Bitmap byteArrayToBitmap(byte[] byteArray, Activity wActivity){
+    public Bitmap byteArrayToBitmap(byte[] byteArray, Activity wActivity){
         Bitmap bmp;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inMutable = true;

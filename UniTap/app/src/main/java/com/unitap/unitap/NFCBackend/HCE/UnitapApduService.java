@@ -108,9 +108,11 @@ public class UnitapApduService extends HostApduService {
      * @return an Ack apdu
      */
     private byte[] createAck(byte[] apdu){
-        apdu[3] = 0x02;
+        byte[] ack = {0x00,0x00,0x01,0x04};
+        return ack;
+       // apdu[2] = 0x02;
         //this should be modified later
-        return apdu;
+       // return apdu;
     }
 
     /**
@@ -119,7 +121,7 @@ public class UnitapApduService extends HostApduService {
      * @return an error apdu
      */
     private byte[] createError(byte[] apdu){
-        apdu[3] = 0x03;
+        apdu[2] = 0x03;
         //this should be modified later
         return apdu;
     }
@@ -204,7 +206,8 @@ public class UnitapApduService extends HostApduService {
     private byte[] handleUniTapAck(byte[] apdu){
         lastMessage = null;
         count++;
-        return "u.".getBytes();
+        byte[] junk= {0x75,0x2e};
+        return junk;
     }
 
     /**

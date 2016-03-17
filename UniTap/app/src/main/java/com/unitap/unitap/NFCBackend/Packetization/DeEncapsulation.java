@@ -3,8 +3,8 @@ package com.unitap.unitap.NFCBackend.Packetization;
 /**
  * This will decompile a packet (From the terminal) into it's included information.
  * This is the packet design from the terminal to the phone
- * 0                     2            3                      4
- * | 2-byte Message CRC | 1 byte Type | 1 byte packet-length | <=27 byte message user's id
+ * 0                     2                                           3                      4
+ * | 2-byte Message CRC | 1/2 byte Type 1/2 byte accept/reject byte  | 1 byte packet-length |  <=27 byte message user's id
  *
  * Packet types: (0=Generic ,1=Acknowledgement ,2=Error)
  *

@@ -26,10 +26,13 @@ unsigned long responseTime;
 byte mac[] = {  0x90, 0xA2, 0xDA, 0x00, 0x00, 0x00 };
 
 EthernetClient client;
-EthernetServer server(2016);
+EthernetClient client1;
+EthernetServer server(2016);  // Arduino Server to recieve from JAVA
+IPAddress serverIP(172,17,208,70); //  JAVA SERVER
 
 byte * nextMessage;
 byte * lastMessage;
+byte * readBytes = new byte [MAX_APDU_LENGTH];
 
 byte lastAPDU[MAX_APDU_LENGTH];
 
@@ -39,6 +42,7 @@ bool waiting = true;
 
 int errorCount = 0;
 int ledCount;
+int serverPort = 2015; // JAVA PORT
 
 byte junk[] = {0x75,0x2e};
 /**************************************************
@@ -106,21 +110,22 @@ void loopNFC(){
             digitalWrite(GREENLEDPIN, LOW);
             digitalWrite(REDLEDPIN, LOW);
           }
-        }
-        else {
+        } else {
           Serial.println("\nPhone Removed from the Terminal");
           clearMessages();
           nextMessageSent = false;
           lastAckReceived = false;
-          blinkOff();
         }
       }
-      while(apduExchangeSuccess&& !errorProne);
+      while(apduExchangeSuccess && !errorProne);
     } else {
       Serial.println("Failed sending SELECT AID"); 
       blinkFailure();
     }
   }
+
+  //WAIT OR A MESSAGE HERE
+  
   delay(2000);
 }
 /*****************************************************
@@ -214,7 +219,7 @@ byte* handleUniTapGeneric(byte apdu[], int apduLength){
       output[2] = 0x01;
       output[3] = 0x06;
       //send to server here
-      //sendApduToServer(apdu);
+      sendApduToServer(apdu);
     } else {
       Serial.println("The CRC was not validated.");
       Serial.println("Reporting error to the phone and requesting the message again");
@@ -291,15 +296,42 @@ void clearMessages(){
 void sendApduToServer(byte apdu[]){
   int apduLength = apdu[3];
   enableETH();  //switching the ethernet shield on
-  if (client.connected()) {
+  Serial.println("Forwarding APDU to the proxy-server");
+  client.write(apdu, apduLength); 
+  char c;
+  // Recieving from the JAVA server
+  Serial.println("Waiting for Unitap Server");
+  bool received = false;
+  for(int i = 0; i < 100 && !client1.connected() && !received;i++){
+     client1.stop();
+     client1 = server.available();   
+     delay(500);
+  }
+  if(client1){
+      Serial.println("recieving from JAVA server ...");
+      for (int i = 0; i < MAX_APDU_LENGTH && client1.connected() && !received; i++) {
+          if (client1.available()) {
+              c = client1.read();
+              Serial.print(c);
+              readBytes[i]=c;
+          }
+      }
+  }
+   printByteArray(readBytes, 2);
+  //if(readBytes == "ON")
+    blinkSuccess();
+  //else if (readBytes == "OFF")
+   // blinkFailure();
+  reInitPN532(); //switching the pn532 back on
+  /*if (client.connect(serverIP,serverPort)) {
     Serial.println("Connection to proxy-server established");
     Serial.println("Forwarding APDU to the proxy-server");
-    client.write(apdu, apduLength); 
+    
+    
     Serial.println("Waiting for the server response");
   } else {
     Serial.println("Unable to connect to the proxy-server");
-  }
-  reInitPN532(); //switching the pn532 back on
+  }*/
 }
 /**************************************************************
  *                Acting on External IO 
@@ -358,11 +390,19 @@ bool GREENON = false;
 void blinkSuccess(){
   digitalWrite(REDLEDPIN, LOW);
   digitalWrite(GREENLEDPIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(300);              // wait for a second
+  delay(500);              // wait for a second
   digitalWrite(GREENLEDPIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(300);              // wait for a second
+  delay(500);              // wait for a second
   digitalWrite(GREENLEDPIN, HIGH);    // turn the LED off by making the voltage LOW
-  delay(300);              // wait for a second
+  delay(500);              // wait for a second
+  digitalWrite(GREENLEDPIN, LOW);    // turn the LED off by making the voltage LOW
+  delay(500);              // wait for a second
+  digitalWrite(GREENLEDPIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+  delay(500);              // wait for a second
+  digitalWrite(GREENLEDPIN, LOW);    // turn the LED off by making the voltage LOW
+  delay(500);              // wait for a second
+  digitalWrite(GREENLEDPIN, HIGH);    // turn the LED off by making the voltage LOW
+  delay(1000);              // wait for a second
   digitalWrite(GREENLEDPIN, LOW);    // turn the LED off by making the voltage LOW
   //blink green lights, slowly (beep [2 quick beeps] if I can find my speaker)
 }
@@ -390,13 +430,20 @@ void blinkWaiting(){
 void blinkFailure(){
   digitalWrite(GREENLEDPIN, LOW);
   digitalWrite(REDLEDPIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(300);              // wait for a second
+  delay(500);              // wait for a second
   digitalWrite(REDLEDPIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(300);              // wait for a second
+  delay(500);              // wait for a second
   digitalWrite(REDLEDPIN, HIGH);    // turn the LED off by making the voltage LOW
-  delay(300);              // wait for a second
+  delay(500);              // wait for a second
   digitalWrite(REDLEDPIN, LOW);    // turn the LED off by making the voltage LOW
-  
+  delay(500); 
+  digitalWrite(REDLEDPIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+  delay(500);              // wait for a second
+  digitalWrite(REDLEDPIN, LOW);    // turn the LED off by making the voltage LOW
+  delay(500);              // wait for a second
+  digitalWrite(REDLEDPIN, HIGH);    // turn the LED off by making the voltage LOW
+  delay(1000);              // wait for a second
+  digitalWrite(REDLEDPIN, LOW);    // turn the LED off by making the voltage LOW
   //blink red lights, slowly (beep [one long beep] if i can find the speaker)
 }
 void blinkOff(){
@@ -439,14 +486,24 @@ void initETH() {
   Serial.println("Ethernet Shield Initialized");
   //ETHERNET SETUP
   server.begin();
-  Serial.print("The server is ");
-  if (server.available())
-    Serial.println("available");
-  else
-    Serial.println("unavailable");
+  
   Serial.print("Terminal IP ");
   Serial.println(Ethernet.localIP());
-}
+  
+  //Connecting to the java server
+  Serial.println("connecting to the server ...");
+  if(client.connect(serverIP,serverPort)){
+    Serial.println("Connected");
+    Serial.println("Sending a message");
+    client.println("Hello Server");
+        }
+
+   else{
+      Serial.println("Disconnected");
+    
+    }
+    
+} // End of initETH
 
 void initPN532() {
   nfc.begin();
@@ -471,14 +528,15 @@ void initPN532() {
 }
 void reInitPN532() {
   enablePN();
+  
   nfc.begin();
   // configure board to read RFID tags
   nfc.SAMConfig();
-
+  
   bool success;
   uint8_t responseLength = 31;
   success = nfc.inListPassiveTarget();
-  if(success) {   
+  if(success) {
     uint8_t selectApdu[] = { 0x00, /* CLA */
                               0xA4, /* INS */
                               0x04, /* P1  */
@@ -518,3 +576,11 @@ void enableETH() {
   SPI.setClockDivider( SPCR & SPI_CLOCK_MASK);
   delay(10);
 }
+/*
+String getCommand(){
+   String readString="";
+   char c;
+   
+  
+ return readString; 
+ }*/

@@ -17,7 +17,7 @@ import java.nio.ByteBuffer;
  */
 public class Encapsulation {
     final static int HCE_MAX_MESSAGE = 31;
-    final static int OVERHEAD = 9;
+    final static int OVERHEAD = 5;
     /**
      * This function will add all of the important info to the message. If it is within length boundaries, it will return the encapsulated string. If outside, it will return null;
      * @param message the actual message
@@ -49,9 +49,7 @@ public class Encapsulation {
      * @return
      */
     private static byte[] addCRC(byte[] message){
-        if (message.length <= (HCE_MAX_MESSAGE-2))
-            return CRC16.appendCRCBytes(message);
-        else return null;
+        return CRC16.appendCRCBytes(message);
     }
 
     /**
@@ -63,9 +61,8 @@ public class Encapsulation {
      */
     private static byte[] addType(byte[] message, int type){
         if (type < 3) {
-            if (message.length <= (HCE_MAX_MESSAGE - 3)) {
-                return appendHeadIntValue(message, type, 1);
-            }
+            return appendHeadIntValue(message, type, 1);
+
         }
         return null;
     }
@@ -78,10 +75,7 @@ public class Encapsulation {
      * @param num the number of this packet transfer
      */
     private static byte[] addPacketLength(byte[] message, int num){
-        if (message.length <=(HCE_MAX_MESSAGE - 4)) {
-            return appendHeadIntValue(message, num, 1);
-        }
-        return null;
+        return appendHeadIntValue(message, num, 1);
     }
 
     /**
@@ -91,13 +85,11 @@ public class Encapsulation {
      * @return the appended message
      */
     private static byte[] addAccept(byte[] message, boolean accepted){
-        if (message.length <=(HCE_MAX_MESSAGE - 5)) {
-            if(accepted)
-                return appendHeadIntValue(message, 1, 1);
-            else
-                return appendHeadIntValue(message, 0, 1);
-        }
-        return null;
+        if(accepted)
+            return appendHeadIntValue(message, 1, 1);
+        else
+            return appendHeadIntValue(message, 0, 1);
+
     }
 
     /**

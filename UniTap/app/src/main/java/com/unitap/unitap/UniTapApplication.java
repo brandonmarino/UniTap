@@ -14,7 +14,6 @@ public class UniTapApplication extends Application{
         super.onCreate();
 
         Parse.enableLocalDatastore(this);
-        //Parse.initialize(this, "r05g6kTnuuIxBdl6J5g1skAcGEuNqsEBsvCC8GC2", "XKvIT81OpBTnTRrP2Uf42C08NVMEP20ez5U6y6Se");
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("r05g6kTnuuIxBdl6J5g1skAcGEuNqsEBsvCC8GC2")
                 .clientKey("XKvIT81OpBTnTRrP2Uf42C08NVMEP20ez5U6y6Se")

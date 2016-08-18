@@ -396,7 +396,9 @@ public class WalletActivity extends NavigationPane {
                         cardImageFile.getDataInBackground(new GetDataCallback() {
                             @Override
                             public void done(byte[] data, ParseException e) {
-                                Bitmap image = tag.byteArrayToBitmap(data, wActivity);
+                                if(e == null) {
+                                    Bitmap image = tag.byteArrayToBitmap(data, wActivity);
+                                }
                             }
                         });
 

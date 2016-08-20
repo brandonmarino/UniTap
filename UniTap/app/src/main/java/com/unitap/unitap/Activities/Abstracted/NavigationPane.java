@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.parse.ParseUser;
+import com.unitap.unitap.Activities.LoginActivity;
 import com.unitap.unitap.Activities.SettingsActivity;
 import com.unitap.unitap.Activities.WalletActivity;
 import com.unitap.unitap.R;
@@ -97,11 +99,9 @@ public abstract class NavigationPane extends AppCompatActivity
             startActivity(newIntent);
         } else if (id == R.id.nav_loginout) {
             //logout of the current wallet
-            if (item.getTitle().equals("Log In")) {
-                item.setTitle("Log Out");
-            }else{
-                item.setTitle("Log In");
-            }
+            ParseUser.logOut();
+            newIntent = new Intent(this, LoginActivity.class);
+            startActivity(newIntent);
         } else if (id == R.id.nav_settings) {
             newIntent = new Intent(this, SettingsActivity.class);
             startActivity(newIntent);

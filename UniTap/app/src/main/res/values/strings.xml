@@ -9,7 +9,7 @@
     <string name="nav_wallet">Wallet</string>
     <string name="nav_testingNDEF">Testing NDEF</string>
     <string name="nav_testingHCE">Testing HCE</string>
-    <string name="nav_loginout">Log In</string>
+    <string name="nav_loginout">Log Out</string>
     <string name="nav_settings">Settings</string>
     <!-- Secondary NavPane Labels -->
     <string name="nav_begging">Please Tell People About Us!</string>

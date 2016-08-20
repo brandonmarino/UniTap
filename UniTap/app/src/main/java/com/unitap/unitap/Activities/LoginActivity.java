@@ -27,8 +27,6 @@ import com.unitap.unitap.R;
 public class LoginActivity extends ParseLoginDispatchActivity{
 
     LoginActivity activity;
-    Button login, register;
-    EditText username, password;
     private static final int PERMISSION_REQUEST_CODE = 1;
     public static boolean permissionNFC = false;
     //public static boolean permissionReadPhoneState = false;

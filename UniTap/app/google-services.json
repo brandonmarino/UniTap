@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1039656696815",
+    "project_id": "firebase-unitap"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1039656696815:android:1a6e60d28bc2e513",
+        "android_client_info": {
+          "package_name": "com.unitap.unitap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1039656696815-041e7jpvohs2s6sfr27p50ktuoc0nojs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.unitap.unitap",
+            "certificate_hash": "2B952DE4D51B314AEC9D24098164E414170B2F5E"
+          }
+        },
+        {
+          "client_id": "1039656696815-7722shsss2rbd1d0knlphvbkbkdvoelg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBO1ZwfVx8U5zJ4qbmk9Le_oMp_wvpmGWk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

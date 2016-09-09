@@ -26,11 +26,15 @@ import com.unitap.unitap.R;
  */
 public class LoginActivity extends ParseLoginDispatchActivity{
 
-    LoginActivity activity;
     private static final int PERMISSION_REQUEST_CODE = 1;
     public static boolean permissionNFC = false;
     //public static boolean permissionReadPhoneState = false;
 
+    /**
+     * Using Parse API, a login screen is generated automatically if a user is not currently
+     * logged in, otherwise the user is redirected to the personal wallet immediately
+     * @return WalletActivity or ParseLoginActivity
+     */
     @Override
     protected Class<?> getTargetClass() {
         checkPermissions();

@@ -55,6 +55,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements
         }
     }
 
+    /**
+     * Method to detect theme change
+     * @param sharedPreferences
+     * @param key
+     */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key){
         String choice = sharedPreferences.getString(key, "themeType");

@@ -101,7 +101,7 @@ public abstract class NavigationPane extends AppCompatActivity
         Intent newIntent;
         if (id == R.id.nav_wallet) {
             if(currentActivity instanceof WalletActivity) {
-                drawer.closeDrawer(GravityCompat.START);
+                drawer.closeDrawer(GravityCompat.START);    //Just close drawer if already in WalletActivity
             }
             else{
                 newIntent = new Intent(this, WalletActivity.class);

@@ -90,6 +90,7 @@ public class WalletActivity extends NavigationPane {
 
         crypt= new AdvancedEncryptionStandard(getKey()); //store key in encryption object
 
+        //Add card to list
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +130,7 @@ public class WalletActivity extends NavigationPane {
             listView.setAdapter(mCardArrayAdapter);
         }
 
+        //Listening for setting change from settings activity
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefListener = new PreferenceChangeListener();
         prefs.registerOnSharedPreferenceChangeListener(prefListener);
@@ -163,6 +165,11 @@ public class WalletActivity extends NavigationPane {
         super.onPause();
     }
 
+    /**
+     Method to add a card to the current wallet as well as server
+     @param tag to create for card
+     @param isFromServer to check if card needs to be added to server database
+     */
     private void addCard(final Tag tag, boolean isFromServer){
         //logo on card
         Card newCard = new Card(this, R.layout.content_wallet);
@@ -212,7 +219,7 @@ public class WalletActivity extends NavigationPane {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(wActivity);
                 dialog.setItems(R.array.card_options, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if(which == 0){
+                        if(which == 0){ //Edit card
                             final EditText cardName = new EditText(wActivity);
                             mMaterialDialog = new MaterialDialog(wActivity)
                                     .setTitle("Edit Card")
@@ -238,9 +245,9 @@ public class WalletActivity extends NavigationPane {
                                     });
                             mMaterialDialog.show();
                         }
-                        if(which == 1){
+                        if(which == 1){ //Delete card
                             new AlertDialog.Builder(wActivity)
-                                    .setTitle("Title")
+                                    .setTitle("Confirm")
                                     .setMessage("Do you really want to remove this card?")
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -345,6 +352,10 @@ public class WalletActivity extends NavigationPane {
         return key;
     }
 
+    /**
+     * Method to detect chosen theme for wallet
+     * @param choice for theme
+     */
     public void chooseTheme(String choice){
         int themeId = 0;
         if(choice.equals("1")){
@@ -369,10 +380,14 @@ public class WalletActivity extends NavigationPane {
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key){
             String choice = prefs.getString(key, "themeType");
             chooseTheme(choice);
-            recreate(); //Causing minor hiccup in displaying navigation view on return from settings
+            recreate();
         }
     }
 
+    /**
+     * Method that saves card and its contents to server database
+     * @param tag to save
+     */
     private void saveCardToCloud(Tag tag){
         byte[] cardImageData = tag.bitmapToByteArray(tag.getImage(wActivity), wActivity);
         ParseFile cardImageFile = new ParseFile("cardimage.jpeg", cardImageData);
@@ -385,6 +400,9 @@ public class WalletActivity extends NavigationPane {
         card.saveInBackground();
     }
 
+    /**
+     * Method to query the server database and retrieve cards to be added to the list
+     */
     private void retrieveCardsFromCloud(){
         ParseQuery cardQuery = new ParseQuery("Card");
         cardQuery.whereEqualTo("owner", ParseUser.getCurrentUser());
@@ -423,6 +441,10 @@ public class WalletActivity extends NavigationPane {
         });
     }
 
+    /**
+     * Method to remove card from cloud when confirming removal from wallet
+     * @param tag to be removed
+     */
     public void removeCardFromCloud(Tag tag){
         ParseQuery removeQuery = new ParseQuery("Card");
         removeQuery.getInBackground(tag.getTagID(), new GetCallback<ParseObject>() {
@@ -434,6 +456,10 @@ public class WalletActivity extends NavigationPane {
         });
     }
 
+    /**
+     * Method to update card contents in server database, for now only card title
+     * @param tag to update
+     */
     public void updateCardInfo(final Tag tag){
         ParseQuery editQuery = new ParseQuery("Card");
         editQuery.getInBackground(tag.getTagID(), new GetCallback<ParseObject>() {
@@ -446,6 +472,10 @@ public class WalletActivity extends NavigationPane {
         });
     }
 
+    /**
+     * Method to check if the network is available to communicate with server database
+     * @return true if able, false if not
+     */
     private boolean isNetworkAvailable(){
         ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -464,6 +494,9 @@ public class WalletActivity extends NavigationPane {
     }
     */
 
+    /**
+     * Method that clears reference to activity if paused or destroyed
+     */
     private void clearReferences(){
         Activity currActivity = uniTapApplication.getCurrentActivity();
         if(this.equals(currActivity)){

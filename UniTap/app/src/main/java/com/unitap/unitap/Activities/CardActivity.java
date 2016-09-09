@@ -40,6 +40,10 @@ public class CardActivity extends AppCompatActivity {
         startTransaction();
     }
 
+    /**
+     * Method to retrieve card data from wallet activity and begin transaction of data
+     * when card is tapped to terminal
+     */
     private void startTransaction(){
         ImageView cardImageView;
         hceAdapter = new HCEAdapter(this);

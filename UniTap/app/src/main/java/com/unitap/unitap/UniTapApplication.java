@@ -25,10 +25,18 @@ public class UniTapApplication extends Application{
         ParseFacebookUtils.initialize(this);
     }
 
+    /**
+     * Gets current activity in foreground
+     * @return activity
+     */
     public Activity getCurrentActivity(){
         return currentActivity;
     }
 
+    /**
+     * Sets activity in foreground
+     * @param currentActivity to set
+     */
     public void setCurrentActivity(Activity currentActivity){
         this.currentActivity = currentActivity;
     }

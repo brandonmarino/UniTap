@@ -1,6 +1,8 @@
 package com.unitap.unitap.Activities.Abstracted;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -16,6 +18,7 @@ import com.unitap.unitap.Activities.LoginActivity;
 import com.unitap.unitap.Activities.SettingsActivity;
 import com.unitap.unitap.Activities.WalletActivity;
 import com.unitap.unitap.R;
+import com.unitap.unitap.UniTapApplication;
 
 public abstract class NavigationPane extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -91,12 +94,19 @@ public abstract class NavigationPane extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        Activity currentActivity = ((UniTapApplication) this.getApplicationContext()).getCurrentActivity();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Intent newIntent;
         if (id == R.id.nav_wallet) {
-            newIntent = new Intent(this, WalletActivity.class);
-            startActivity(newIntent);
+            if(currentActivity instanceof WalletActivity) {
+                drawer.closeDrawer(GravityCompat.START);
+            }
+            else{
+                newIntent = new Intent(this, WalletActivity.class);
+                startActivity(newIntent);
+            }
         } else if (id == R.id.nav_loginout) {
             //logout of the current wallet
             ParseUser.logOut();
@@ -111,7 +121,6 @@ public abstract class NavigationPane extends AppCompatActivity
             //tell them about us... i guess...
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

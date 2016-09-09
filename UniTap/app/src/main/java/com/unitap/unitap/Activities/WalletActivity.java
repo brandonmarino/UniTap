@@ -34,6 +34,7 @@ import com.unitap.unitap.DataControl.FileIO;
 import com.unitap.unitap.DataControl.AdvancedEncryptionStandard;
 import com.unitap.unitap.Exceptions.ProjectExceptions;
 import com.unitap.unitap.R;
+import com.unitap.unitap.UniTapApplication;
 import com.unitap.unitap.Wallet.Tag;
 import com.unitap.unitap.Wallet.Wallet;
 
@@ -56,6 +57,7 @@ import me.drakeet.materialdialog.MaterialDialog;
 public class WalletActivity extends NavigationPane {
 
     protected static final int REQUEST_CODE = 100;
+    protected UniTapApplication uniTapApplication;
     private Wallet wallet = new Wallet("Some Guy");;  //model
     private ArrayList<Card> cardList = new ArrayList<>();   //view
     private File walletCache;   //file store encrypted xml equivalent of the user's wallet
@@ -77,6 +79,7 @@ public class WalletActivity extends NavigationPane {
         setNewContentView(R.layout.activity_wallet);
         super.onCreate(savedInstanceState);
         walletActivity = this;
+        uniTapApplication = (UniTapApplication) this.getApplicationContext();
 
         //Title in Actionbar
         setToolbarTitle("wallet");
@@ -150,7 +153,14 @@ public class WalletActivity extends NavigationPane {
     @Override
     public void onResume(){
         super.onResume();
+        uniTapApplication.setCurrentActivity(this);
         //restoreWallet();
+    }
+
+    @Override
+    public void onPause(){
+        clearReferences();
+        super.onPause();
     }
 
     private void addCard(final Tag tag, boolean isFromServer){
@@ -453,5 +463,13 @@ public class WalletActivity extends NavigationPane {
         byte[] bitmapdata = stream.toByteArray();
     }
     */
+
+    private void clearReferences(){
+        Activity currActivity = uniTapApplication.getCurrentActivity();
+        if(this.equals(currActivity)){
+            uniTapApplication.setCurrentActivity(null);
+        }
+    }
+
 }
 

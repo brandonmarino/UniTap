@@ -1,5 +1,6 @@
 package com.unitap.unitap;
 
+import android.app.Activity;
 import android.app.Application;
 
 import com.parse.Parse;
@@ -9,6 +10,7 @@ import com.parse.ParseFacebookUtils;
  * Created by Danny on 27/01/2016.
  */
 public class UniTapApplication extends Application{
+    private Activity currentActivity;
 
     public void onCreate(){
         super.onCreate();
@@ -21,6 +23,14 @@ public class UniTapApplication extends Application{
         .build()
         );
         ParseFacebookUtils.initialize(this);
+    }
+
+    public Activity getCurrentActivity(){
+        return currentActivity;
+    }
+
+    public void setCurrentActivity(Activity currentActivity){
+        this.currentActivity = currentActivity;
     }
 
 }
